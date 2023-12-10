@@ -5,19 +5,16 @@
 
 int main(int ac, char** av, char** env)
 {
-	(void)ac;
-	(void)av;
-
 	/* First Step: get the current pwd */
-	int		pos;
-	int		j;
+	int		pos = 0;
+	int		j = 0;
 	char*	path = NULL;
 	DIR* directory = NULL;
 	struct	dirent* rd = NULL;
 
 
-	pos = 0;
-	j = 0;
+	(void)ac;
+	(void)av;
 	while (env[j])
 	{
 		if (pwdch(env[j]))
