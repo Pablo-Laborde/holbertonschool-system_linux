@@ -57,6 +57,11 @@ int main(int ac, char** av, char** env)
 }
 
 
+/**
+* pwdch- function
+* @str: int
+* Return: int
+*/
 int pwdch(char* str)
 {
 	int		pos = 0;
@@ -74,6 +79,11 @@ int pwdch(char* str)
 }
 
 
+/**
+* getpath- function
+* @str: int
+* Return: char*
+*/
 char* getpath(char* str)
 {
 	int		pos = 0;
