@@ -9,12 +9,15 @@ int main(int ac, char** av, char** env)
 	(void)av;
 
 	/* First Step: get the current pwd */
-	int		pos = 0;
-	int		j = 0;
+	int		pos;
+	int		j;
 	char*	path = NULL;
+	DIR* directory = NULL;
 	struct	dirent* rd = NULL;
 
 
+	pos = 0;
+	j = 0;
 	while (env[j])
 	{
 		if (pwdch(env[j]))
@@ -28,10 +31,10 @@ int main(int ac, char** av, char** env)
 	/* printf("%s\n", path); */
 
 	/* Third Step: open -> read -> close stream */
-	DIR* directory = opendir(path);
+	directory = opendir(path);
 	if (directory)
 	{
-		while (rd = readdir(directory))
+		while ( (rd = readdir(directory)) )
 		{
 			/*
 			printf("%lu\n" ,rd->d_ino);
@@ -40,7 +43,7 @@ int main(int ac, char** av, char** env)
 			printf("%d\n" ,rd->d_type);
 			*/
 			if (rd->d_name[0] != '.')
-				printf("%s\t" ,rd->d_name);
+				printf("%s\t", rd->d_name);
 		}
 		closedir(directory);
 		printf("\n");
