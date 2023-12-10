@@ -2,7 +2,13 @@
 
 #include "ls.h"
 
-
+/**
+* main- function
+* @ac: int
+* @av: char**
+* @env: char**
+* Return: int
+*/
 int main(int ac, char** av, char** env)
 {
 	/* First Step: get the current pwd */

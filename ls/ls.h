@@ -1,5 +1,3 @@
-/*	ls Header File	*/
-
 #ifndef LS_FILE_H
 #define LS_FILE_H
 
