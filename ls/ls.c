@@ -21,7 +21,7 @@ int main(int ac, char** av, char** env)
 			pos = j;
 		j++;
 	}
-	printf("%s\n", env[pos]);
+	/* printf("%s\n", env[pos]); */
 
 	/* Second Step: get the path */
 	path = getpath(env[pos]);
