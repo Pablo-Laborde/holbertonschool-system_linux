@@ -6,14 +6,18 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdio.h>
+#include <errno.h>
 
 
 /*	Functions	*/
 
-/* pwdch checks if the string begins with "OLDPWD" */
+/*	display files in the directory	*/
+int dirdis(char* path);
+
+/*	pwdch checks if the string begins with "OLDPWD"	*/
 int pwdch(char* str);
 
-/* getpath returns the current path */
+/*	getpath returns the current path	*/
 char* getpath(char* str);
 
 #endif
