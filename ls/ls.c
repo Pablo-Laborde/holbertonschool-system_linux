@@ -15,7 +15,6 @@ int main(int ac, char** av, char** env)
 	int		j = 0;
 	char*	path = NULL;
 
-	printf("%d\n", errno);
 	/*	get the path -> pass to disdir	*/
 	if (ac == 1)
 	{
@@ -73,11 +72,7 @@ int dirdis(char* path)
 		closedir(directory);
 		printf("\n");
 	}
-	else
-	{
-		/*	print errors	*/
-		printf("%d\n", errno);
-	}
+	return (errno);
 }
 
 
