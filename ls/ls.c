@@ -1,4 +1,4 @@
-/* ls program - excersie 0 */
+/*	ls program - excersie 0	*/
 
 #include "ls.h"
 
@@ -11,40 +11,62 @@
 */
 int main(int ac, char** av, char** env)
 {
-	/* First Step: get the current pwd */
 	int		pos = 0;
 	int		j = 0;
 	char*	path = NULL;
+
+	printf("%d\n", errno);
+	/*	get the path -> pass to disdir	*/
+	if (ac == 1)
+	{
+		/*	get the current pwd	*/
+		while (env[j])
+		{
+			if (pwdch(env[j]))
+				pos = j;
+			j++;
+		}
+		/*	printf("%s\n", env[pos]);	*/
+		path = getpath(env[pos]);
+		/*	printf("%s\n", path);	*/
+		dirdis(path);
+	}
+	else
+	{
+		/*	read each path from av	*/
+		for (pos = 1; pos < ac; pos++)
+		{
+			if (pos > 1)
+				printf("\n");
+			printf("%s:\n", av[pos]);
+			dirdis(av[pos]);
+		}
+	}
+
+	return (errno);
+}
+
+
+/**
+* dirdis- function
+* @path: int
+* Return: int
+*/
+int dirdis(char* path)
+{
 	DIR* directory = NULL;
 	struct	dirent* rd = NULL;
 
-
-	(void)ac;
-	(void)av;
-	while (env[j])
-	{
-		if (pwdch(env[j]))
-			pos = j;
-		j++;
-	}
-	/* printf("%s\n", env[pos]); */
-
-	/* Second Step: get the path */
-	path = getpath(env[pos]);
-	/* printf("%s\n", path); */
-
-	/* Third Step: open -> read -> close stream */
+	/*	open -> read & print -> close stream	*/
 	directory = opendir(path);
 	if (directory)
 	{
 		while ( (rd = readdir(directory)) )
 		{
-			/*
-			printf("%lu\n" ,rd->d_ino);
-			printf("%lu\n" ,rd->d_off);
-			printf("%hu\n" ,rd->d_reclen);
-			printf("%d\n" ,rd->d_type);
-			*/
+			/*	printf("%lu\n" ,rd->d_ino);
+				printf("%lu\n" ,rd->d_off);
+				printf("%hu\n" ,rd->d_reclen);
+				printf("%d\n" ,rd->d_type);	*/
 			if (rd->d_name[0] != '.')
 				printf("%s\t", rd->d_name);
 		}
@@ -52,8 +74,10 @@ int main(int ac, char** av, char** env)
 		printf("\n");
 	}
 	else
-		printf("fail\n");
-	return (0);
+	{
+		/*	print errors	*/
+		printf("%d\n", errno);
+	}
 }
 
 
@@ -67,7 +91,6 @@ int pwdch(char* str)
 	int		pos = 0;
 	int		flag = 1;
 	char*	name = "PWD";
-
 
 	while (name[pos])
 	{
@@ -87,6 +110,7 @@ int pwdch(char* str)
 char* getpath(char* str)
 {
 	int		pos = 0;
+
 	while (str[pos] != '=')
 		pos++;
 	return (&(str[pos + 1]));
