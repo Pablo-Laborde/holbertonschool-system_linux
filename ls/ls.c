@@ -12,7 +12,6 @@
 int main(int ac, char** av, char** env)
 {
 	int		pos = 0;
-	int		j = 0;
 	char*	path = NULL;
 	DIR*	directory = NULL;
 
