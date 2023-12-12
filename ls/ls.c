@@ -62,24 +62,18 @@ int dirdis(DIR*	directory, char* filename)
 		{
 			while ( (rd = readdir(directory)) )
 			{
-				//if (rd->d_type == 4)
-				//	printf("%s:\n", rd->d_name);
-				// printf("%lu\n" ,rd->d_ino);
-				// printf("%lu\n" ,rd->d_off);
-				// printf("%hu\n" ,rd->d_reclen);
-				// printf("%d\n" ,rd->d_type);
-				//if (rd->d_name[0] != '.')
+				/*if (rd->d_type == 4)
+					printf("%s:\n", rd->d_name);
+				printf("%lu\n" ,rd->d_ino);
+				printf("%lu\n" ,rd->d_off);
+				printf("%hu\n" ,rd->d_reclen);
+				printf("%d\n" ,rd->d_type); */
+				if (rd->d_name[0] != '.')
 					printf("%s\t", rd->d_name);
 			}
 			printf("\n");
 		}
-		// else
-		// {
-
-		// }
 	}
-	// else if ()
-	// {}
 	else
 	{
 		errmsg = strerror(errno);
