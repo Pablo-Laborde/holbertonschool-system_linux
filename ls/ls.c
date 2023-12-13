@@ -96,7 +96,7 @@ void reclist(DIR* directory, char* filename)
 	if (rd)
 	{
 		reclist(directory, filename);
-		if ((!filename) || (!strcmp(filename, rd->d_name)))
+		if ((!filename) || (!strc(filename, rd->d_name)))
 			printf("%s\n", rd->d_name);
 	}
 	return;
@@ -156,4 +156,22 @@ int pwdch(char* str)
 		pos++;
 	}
 	return (flag);
+}
+
+
+int strc(char* str1, char* str2)
+{
+	int		i = 0;
+	int		eq = 0;
+
+	if (str1 && str2)
+		do
+		{
+			if (str1[i] != str2[i])
+				eq = 1;
+			i++;
+			if ((str1[i] && !str2[i]) || (!str1[i] && str2[i]))
+				eq = 1;
+		}	while (str1[i] && str2[i]);
+	return (eq);
 }
