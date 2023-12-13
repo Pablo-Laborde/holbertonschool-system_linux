@@ -29,4 +29,7 @@ char* getpath(char** env);
 /*	pwdch checks if the string begins with "PWD"	*/
 int pwdch(char* str);
 
+/*  string compare  */
+int strc(char* str1, char* str2);
+
 #endif
