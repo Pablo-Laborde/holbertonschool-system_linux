@@ -7,6 +7,7 @@
 
 #include <errno.h>
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
@@ -14,11 +15,11 @@
 
 /*	Functions	*/
 
-/*	display files in the directory	*/
-int dirdis(DIR*	directory, char* filename);
+/*  print directory or file */
+int pdf(DIR* dir, char* fn);
 
-/*  lists directory recusively  */
-void reclist(DIR* directory, char* filename);
+/*  check folder    */
+char* folch(char* str, char** filename);
 
 /*  checks if path is a directory   */
 DIR* dirch(char* path);
