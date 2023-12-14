@@ -35,6 +35,8 @@ int main(int ac, char** av, char** env)
 			directory = dirch(av[pos]);
 			if (directory)
 			{
+				if (ac > 2)
+					printf("%s:\n", av[pos]);
 				pdf(directory, av[pos], filename, mode);
 			}
 			else
@@ -55,6 +57,8 @@ int main(int ac, char** av, char** env)
 			}
 			closedir(directory);
 			printf("\n");
+			if ((ac > 2) && (pos < ac - 1))
+				printf("\n");
 		}
 	}
 	return (errno);
