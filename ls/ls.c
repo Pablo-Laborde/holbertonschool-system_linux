@@ -76,7 +76,10 @@ int pdf(DIR* dir, char* fn)
 			printf("%s\n", rd->d_name);
 			*/
 			if (!fn)
-				printf("%s\t", rd->d_name);
+			{
+				if (rd->d_name[0] != '.')
+					printf("%s\t", rd->d_name);
+			}
 			else
 				if (!strc(rd->d_name, fn))
 					printf("%s\t", rd->d_name);
