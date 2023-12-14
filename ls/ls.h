@@ -16,10 +16,10 @@
 /*	Functions	*/
 
 /*  print directory or file */
-int pdf(DIR* dir, char* fn);
+int pdf(DIR* dir,char* dp, char* fn, int mode);
 
 /*  check folder    */
-char* folch(char* str, char** filename);
+char* folch(char* str, char** filename, int* mode);
 
 /*  checks if path is a directory   */
 DIR* dirch(char* path);

@@ -11,7 +11,8 @@
 */
 int main(int ac, char** av, char** env)
 {
-	int		pos = 0;
+	int		pos = 0,
+			mode = 0;
 	char*	path = NULL,
 		*	dirpath = NULL,
 		*	filename = NULL;
@@ -22,7 +23,7 @@ int main(int ac, char** av, char** env)
 	{
 		path = getpath(env);
 		directory = dirch(path);
-		pdf(directory, filename);
+		pdf(directory, path, filename, mode);
 		printf("\n");
 	}
 	else
@@ -30,25 +31,26 @@ int main(int ac, char** av, char** env)
 		/*	read each path or filename from av	*/
 		for (pos = 1; pos < ac; pos++)
 		{
+			mode = 0;
 			directory = dirch(av[pos]);
 			if (directory)
 			{
-				pdf(directory, filename);
+				pdf(directory, av[pos], filename, mode);
 			}
 			else
 			{
-				dirpath = folch(av[pos], &filename);
+				dirpath = folch(av[pos], &filename, &mode);
 				if (dirpath)
 				{
 					directory = dirch(dirpath);
-					pdf(directory, filename);
+					pdf(directory, dirpath, filename, mode);
 					free(dirpath);
 				}
 				else
 				{
 					path = getpath(env);
 					directory = dirch(path);
-					pdf(directory, av[pos]);
+					pdf(directory, path, av[pos], mode);
 				}
 			}
 			closedir(directory);
@@ -59,7 +61,15 @@ int main(int ac, char** av, char** env)
 }
 
 
-int pdf(DIR* dir, char* fn)
+/**
+* pdf- function
+* @dir: DIR*
+* @dp: char*
+* @fn: char*
+* @mode: int
+* Return: int
+*/
+int pdf(DIR* dir,char* dp, char* fn, int mode)
 {
 	struct	dirent*	rd = NULL;
 
@@ -82,7 +92,11 @@ int pdf(DIR* dir, char* fn)
 			}
 			else
 				if (!strc(rd->d_name, fn))
+				{
+					if (mode == 1)
+						printf("%s/", dp);
 					printf("%s\t", rd->d_name);
+				}
 		}
 	}
 	return (errno);
@@ -92,9 +106,11 @@ int pdf(DIR* dir, char* fn)
 /**
 * folch- function
 * @str: char*
+* @filename: char**
+* @mode: int*
 * Return: char*
 */
-char* folch(char* str, char** filename)
+char* folch(char* str, char** filename, int* mode)
 {
 	int		i = 0,
 			j = 0,
@@ -118,6 +134,7 @@ char* folch(char* str, char** filename)
 				foldername[j] = '\0';
 			}
 			*filename = &str[slashpos + 1];
+			*mode = 1;
 		}
 	}
 	return (foldername);
