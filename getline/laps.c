@@ -9,13 +9,6 @@ struct car_s {
 };
 
 
-int main(void)
-{
-	int i[] = {1, 2, 3};
-	race_state(i, 3);
-	race_state(i, 3);
-	return (0);
-}
 /**
 * race_state- function
 * @id: int*
