@@ -26,15 +26,16 @@ void race_state(int *id, size_t size)
 		for (i = 0; i < size; i++)
 		{
 			if (check_car(id[i], race))
-			{
-				printf("%i\n", id[0]);
-			}
+				inc_lap(id[i], race);
 			else
 			{
+				printf("Car %i joined the race\n", id[i]);
 				car = create_car(id[i]);
 				race = ins_car(car, race);
 			}
 		}
+		printf("Race state:\n");
+		print_lap(race);
 	}
 	else
 	{
@@ -88,6 +89,39 @@ cars ins_car(cars car, cars cl)
 			return (car);
 	}
 	return (cl);
+}
+
+
+/**
+* inc_lap- function
+* @id: int
+* @car: cars
+* Return: void
+*/
+void inc_lap(int id, cars car)
+{
+	if (car)
+	{
+		while (car->no != id)
+			car = car->next;
+		if (car->no == id)
+			car->laps++;
+	}
+}
+
+
+/**
+* print_lap- function
+* @car: cars
+* Return: void
+*/
+void print_lap(cars car)
+{
+	while (car)
+	{
+		printf("Car %i [%i laps]\n", car->no, car->laps);
+		car = car->next;
+	}
 }
 
 

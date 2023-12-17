@@ -15,6 +15,8 @@ void race_state(int *id, size_t size);
 /*	TAD		*/
 cars create_car(int id);
 cars ins_car(cars car, cars cl);
+void inc_lap(int id, cars car);
+void print_lap(cars car);
 int check_car(int id, cars cl);
 void del_car_list(cars cl);
 
