@@ -7,12 +7,12 @@ struct car_s {
 	int laps;
 	struct car_s* next;
 };
-typedef struct car_s* cars;
 
 
 int main(void)
 {
 	int i[] = {1, 2, 3};
+	race_state(i, 3);
 	race_state(i, 3);
 	return (0);
 }
@@ -25,10 +25,28 @@ int main(void)
 void race_state(int *id, size_t size)
 {
 	size_t i = 0;
+	cars car = NULL;
 	static cars race = NULL;
 
-	for (i = 0; i < size; i++)
+	if (size > 0)
 	{
+		for (i = 0; i < size; i++)
+		{
+			if (check_car(id[i], race))
+			{
+				printf("%i\n", id[0]);
+			}
+			else
+			{
+				car = create_car(id[i]);
+				race = ins_car(car, race);
+			}
+		}
+	}
+	else
+	{
+		del_car_list(race);
+		race = NULL;
 	}
 }
 
@@ -43,30 +61,74 @@ cars create_car(int id)
 	cars	car = NULL;
 
 	car = malloc(sizeof(struct car_s));
-	return (NULL);
+	if (car)
+	{
+		car->no = id;
+		car->laps = 0;
+		car->next = NULL;
+	}
+	return (car);
+}
+
+
+/**
+* ins_car- function
+* @car: cars
+* @cl: cars
+* Return: cars
+*/
+cars ins_car(cars car, cars cl)
+{
+	if (car)
+	{
+		if (cl)
+		{
+			if (car->no < cl->no)
+			{
+				car->next = cl;
+				return (car);
+			}
+			else
+				cl->next = ins_car(car, cl->next);
+		}
+		else
+			return (car);
+	}
+	return (cl);
 }
 
 
 /**
 * check_car- function
-* @car: cars
-* @car_list: cars*
+* @id: int
+* @cl: cars
 * Return: int
 */
-int check_car(cars car, cars* car_list)
+int check_car(int id, cars cl)
 {
 	int		flag = 0;
-	cars	cl = NULL;
 
-	if ((car_list) && (*car_list) && (car))
+	if (cl)
 	{
-		cl = *car_list;
 		while (!flag && cl)
 		{
-			if (car->no == cl->no)
+			if (id == cl->no)
 				flag = 1;
 			cl = cl->next;
 		}
 	}
 	return (flag);
+}
+
+/**
+* del_car_list- function
+* @car_list: cars
+*/
+void del_car_list(cars cl)
+{
+	if (cl)
+	{
+		del_car_list(cl->next);
+		free(cl);
+	}
 }
