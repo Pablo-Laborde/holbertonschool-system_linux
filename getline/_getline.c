@@ -10,7 +10,7 @@ char *_getline(const int fd)
 {
 	static int		flag = 1;
 	static int		init = 0;
-	static char		buff[1024];
+	static char		buff[READ_SIZE];
 
 	int 	ready = 0;
 	char*	line_ave = NULL,
@@ -30,17 +30,9 @@ char *_getline(const int fd)
 			line_ave = two_in_one(line_aux, line_ave);
 			line_aux = NULL;
 		}
-		if ((init < READ_SIZE) && ((buff[init] == '\n') || (buff[init] == '\0')))
-		{
-			if ((init < (READ_SIZE - 1)) && (buff[init] == '\n') && (buff[init + 1] == '\n'))
-			{
-				write(STDOUT_FILENO, "\n", 1);
-			 	init++;
-			}
+		if (init < READ_SIZE)
 			ready = 1;
-			init++;
-		}
-		if (init >= READ_SIZE)
+		else
 		{
 			if (!ready)
 				line_aux = line_ave;
@@ -51,6 +43,12 @@ char *_getline(const int fd)
 }
 
 
+/**
+* c_line- function
+* @buff: char*
+* @p: int*
+* Return: char*
+*/
 char* c_line(char* buff, int* p)
 {
 	int		init = *p,
@@ -61,8 +59,11 @@ char* c_line(char* buff, int* p)
 
 	while ((buff[fine]) && (fine < READ_SIZE) && (buff[fine] != '\n'))
 		fine++;
+	if (fine < READ_SIZE)
+		while ((buff[fine]) && (fine < READ_SIZE) && (buff[fine] == '\n'))
+			fine++;
 	*p = fine;
-	size = fine - init + 1;
+	size = fine - init;
 	if (size > 1)
 		line = malloc(size);
 	if (line)
@@ -75,6 +76,12 @@ char* c_line(char* buff, int* p)
 }
 
 
+/**
+* two_in_one- function
+* @s1: char*
+* @s2: char*
+* Return: char*
+*/
 char* two_in_one(char* s1, char* s2)
 {
 	int		size = 0,
