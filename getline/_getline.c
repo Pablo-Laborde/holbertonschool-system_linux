@@ -1,6 +1,5 @@
 #include "_getline.h"
 
-#define READ_SIZE 1024
 
 /**
 * _getline- function
@@ -31,8 +30,13 @@ char *_getline(const int fd)
 			line_ave = two_in_one(line_aux, line_ave);
 			line_aux = NULL;
 		}
-		if ((init < READ_SIZE) && (buff[init] == '\n'))
+		if ((init < READ_SIZE) && ((buff[init] == '\n') || (buff[init] == '\0')))
 		{
+			if ((init < (READ_SIZE - 1)) && (buff[init] == '\n') && (buff[init + 1] == '\n'))
+			{
+				printf("\n");
+			 	init++;
+			}
 			ready = 1;
 			init++;
 		}
@@ -75,7 +79,8 @@ char* two_in_one(char* s1, char* s2)
 {
 	int		size = 0,
 				i = 0,
-				j = 0;
+				j = 0,
+				k = 0;
 	char*	line = NULL;
 
 	while (s1[i])
@@ -86,9 +91,9 @@ char* two_in_one(char* s1, char* s2)
 	line = malloc(size);
 	if (line)
 	{
-		for (int k = 0; k < (i - 1); k++)
+		for (k = 0; k < (i - 1); k++)
 			line[k] = s1[k];
-		for (int k = 0; k < j; k++)
+		for (k = 0; k < j; k++)
 			line[i + k] = s2[k];
 		free(s1);
 		free(s2);
