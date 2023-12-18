@@ -106,7 +106,7 @@ char* two_in_one(char* s1, char* s2)
 	line = malloc(size);
 	if (line)
 	{
-		for (k = 0; k < (i - 1); k++)
+		for (k = 0; k < i; k++)
 			line[k] = s1[k];
 		for (k = 0; k < j; k++)
 			line[i + k] = s2[k];
