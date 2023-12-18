@@ -34,7 +34,7 @@ char *_getline(const int fd)
 		{
 			if ((init < (READ_SIZE - 1)) && (buff[init] == '\n') && (buff[init + 1] == '\n'))
 			{
-				printf("\n");
+				write(STDOUT_FILENO, "\n", 1);
 			 	init++;
 			}
 			ready = 1;
