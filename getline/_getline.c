@@ -34,8 +34,7 @@ char *_getline(const int fd)
 			ready = 1;
 		else
 		{
-			if (!ready)
-				line_aux = line_ave;
+			line_aux = line_ave;
 			flag = 1;
 		}
 	}
@@ -57,13 +56,20 @@ char* c_line(char* buff, int* p)
 				j = 0;
 	char*	line = NULL;
 
-	while ((buff[fine]) && (fine < READ_SIZE) && (buff[fine] != '\n'))
+	while ((fine < READ_SIZE) && (buff[fine]) && (buff[fine] != '\n'))
 		fine++;
 	if (fine < READ_SIZE)
-		while ((buff[fine]) && (fine < READ_SIZE) && (buff[fine] == '\n'))
-			fine++;
+	{
+		if (!buff[fine])
+			size = fine - init + 1;
+		else
+			{
+				while ((fine < READ_SIZE) && (buff[fine]) && (buff[fine] == '\n'))
+					fine++;
+				size = fine - init;
+			}
+	}
 	*p = fine;
-	size = fine - init;
 	if (size > 1)
 		line = malloc(size);
 	if (line)
@@ -90,6 +96,8 @@ char* two_in_one(char* s1, char* s2)
 				k = 0;
 	char*	line = NULL;
 
+	if (!s2)
+		return (s1);
 	while (s1[i])
 		i++;
 	while (s2[j])
