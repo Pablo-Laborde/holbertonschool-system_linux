@@ -12,5 +12,6 @@
 char *_getline(const int fd);
 char* c_line(char* buff, int* p);
 char* two_in_one(char* s1, char* s2);
+int line_trn(char* line)
 
 #endif
