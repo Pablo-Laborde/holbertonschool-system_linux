@@ -6,127 +6,100 @@
 * @fd: int
 * Return: char*
 */
-char *_getline(const int fd)
-{
-	static int		flag = 1;
-	static int		init = 0;
-	static char		buff[READ_SIZE];
+char *_getline(const int fd) {
+	static char
+		buff[READ_SIZE];
+	static int
+		pos = 0;
+	ssize_t
+		ar = 0;
+	int
+		i = pos,
+		len = 0,
+		flag = 1;
+	char
+		*str = NULL,
+		*aux = NULL;
 
-	int 	ready = 0;
-	char*	line_ave = NULL,
-			*	line_aux = NULL;
-
-	while (!ready)
-	{
-		if (flag)
-		{
-			read(fd, buff, READ_SIZE);
-			init = 0;
-			flag = 0;
-		}
-		line_ave = c_line(buff, &init);
-		if (line_aux)
-		{
-			line_ave = two_in_one(line_aux, line_ave);
-			line_aux = NULL;
-		}
-		
-		else
-		{
-			line_aux = line_ave;
-			flag = 1;
-		}
+	if (flag) {
+		ar = read(fd, buff, READ_SIZE);
+		flag = 0;
 	}
-	return (line_ave);
+	//printf("ar: %li\ndir: %d\n", ar, buff[0]);
+	//printf("pos: %i\n", pos);
+	//printf("pos: %i\n", pos);
+	if (buff[i]) {
+		while (buff[pos]) {
+			if (buff[pos] == '\n')
+				break;
+			pos++;
+			//printf("1\n");
+		}
+		len = pos - i + 1;
+		str = cpy_string(&buff[i], len);
+		if (str[len - 1] == '\n')
+			str[len - 1] = '\0';
+		if (buff[pos])
+			pos++;
+		//printf("2\n");
+	}
+	return (str);
 }
 
 
 /**
-* c_line- function
-* @buff: char*
-* @p: int*
+* join_strings- function
+* @str1: char*
+* @str2: char*
 * Return: char*
 */
-char* c_line(char* buff, int* p)
-{
-	int		init = *p,
-				fine = *p,
-				size = 0,
-				j = 0;
-	char*	line = NULL;
+char *join_strings(char *str1, char *str2) {
+	int
+		i = 0,
+		len1 = 0,
+		len2 = 0;
+	char
+		*new_str = NULL;
 
-	while ((fine < READ_SIZE) && (buff[fine]) && (buff[fine] != '\n'))
-		fine++;
-	while ((fine < READ_SIZE) && (buff[fine] == '\n'))
-		fine++;
-	size = fine - init + 1;
-	*p = fine;
-	line = malloc(size);
-	if (line)
-	{
-		for (j = 0; j < (size - 1); j++)
-			line[j] = buff[init + j];
-		line[j] = '\0';
+	if (str1 && str2) {
+		while (str1[len1])
+			len1++;
+		while (str2[len2])
+			len2++;
+		new_str = malloc(len1 + len2 + 1);
+		if (new_str) {
+			for (; i < len1; i++)
+				new_str[i] = str1[i];
+			for (i = 0; i < len2; i++)
+				new_str[i + len1] = str2[i];
+			new_str[len1 + len2] = '\0';
+			free(str1);
+			free(str2);
+		}
 	}
-	return (line);
+	return (new_str);
 }
 
 
 /**
-* two_in_one- function
-* @s1: char*
-* @s2: char*
+* cpy_string- function
+* @str: char*
+* @amt: int, doesn't take into account the '\0'
 * Return: char*
 */
-char* two_in_one(char* s1, char* s2)
-{
-	int		size = 0,
-				i = 0,
-				j = 0,
-				k = 0;
-	char*	line = NULL;
+char *cpy_string(char *str, int amt) {
+	int
+		i = 0;
+	char
+		*new_str = NULL;
 
-	if (!s2)
-		return (s1);
-	while (s1[i])
-		i++;
-	while (s2[j])
-		j++;
-	size = i + j - 1;
-	line = malloc(size);
-	if (line)
-	{
-		for (k = 0; k < i; k++)
-			line[k] = s1[k];
-		for (k = 0; k < j; k++)
-			line[i + k] = s2[k];
-		free(s1);
-		free(s2);
-	}
-	return (line);
-}
-
-
-/**
-* two_in_one- function
-* @line: char*
-* Return: int
-*/
-int line_trn(char* line)
-{
-	int		i = 0,
-				flag = 0;
-
-	if (line)
-	{
-		while (line[i])
-		{
-			i++;
-			if (line[i] == '\n')
-				flag = 1;
+	if (str) {
+		new_str = malloc(amt + 1);
+		if (new_str) {
+			for (; i < amt; i++)
+				new_str[i] = str[i];
+			new_str[i] = '\0';
 		}
-		if ((i > 0) && (line[i - 1] == '\n'))
-			line[i - 1] = '\0';
 	}
-return (flag);
+	return (new_str);
 }

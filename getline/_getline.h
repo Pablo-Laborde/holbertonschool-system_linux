@@ -10,8 +10,7 @@
 
 /*	Functions		*/
 char *_getline(const int fd);
-char* c_line(char* buff, int* p);
-char* two_in_one(char* s1, char* s2);
-int line_trn(char* line)
+char *join_strings(char *str1, char *str2);
+char *cpy_string(char *str, int amt);
 
 #endif
