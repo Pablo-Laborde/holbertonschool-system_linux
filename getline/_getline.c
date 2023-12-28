@@ -21,19 +21,17 @@ char *_getline(const int fd) {
 		*str = NULL,
 		*aux = NULL;
 
+	(void)ar;
+	(void)aux;
 	if (flag) {
 		ar = read(fd, buff, READ_SIZE);
 		flag = 0;
 	}
-	//printf("ar: %li\ndir: %d\n", ar, buff[0]);
-	//printf("pos: %i\n", pos);
-	//printf("pos: %i\n", pos);
 	if (buff[i]) {
 		while (buff[pos]) {
 			if (buff[pos] == '\n')
 				break;
 			pos++;
-			//printf("1\n");
 		}
 		len = pos - i + 1;
 		str = cpy_string(&buff[i], len);
@@ -41,7 +39,6 @@ char *_getline(const int fd) {
 			str[len - 1] = '\0';
 		if (buff[pos])
 			pos++;
-		//printf("2\n");
 	}
 	return (str);
 }
