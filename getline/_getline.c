@@ -24,16 +24,21 @@ char *_getline(const int fd)
 
 	(void)ar;
 	(void)aux;
-	do {
+	while (!str)
+	{
 		if (flag)
 		{
 			ar = read(fd, buff, READ_SIZE);
 			flag = 0;
 			pos = 0;
 			i = 0;
-			aux = str;
+			if (str)
+			{
+				aux = str;
+				str = NULL;
+			}
 		}
-		if (buff[i])
+		if (buff[pos])
 		{
 			while (buff[pos] && (pos < READ_SIZE))
 			{
@@ -58,7 +63,7 @@ char *_getline(const int fd)
 				aux = NULL;
 			}
 		}
-	} while (flag);
+	}
 	return (str);
 }
 
