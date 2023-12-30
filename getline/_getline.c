@@ -9,12 +9,12 @@
 char *_getline(const int fd)
 {
 	static char buff[READ_SIZE];
-	static int pos = 0;
-	static ssize_t ar = 0;
+	static int pos;
+	static ssize_t ar;
 	int i = pos, len = 0, cl = 0;
 	char *str = NULL, *aux = NULL;
 
-	while ((pos < ar) || (ar = read(fd, buff, READ_SIZE)))
+	while ((pos < ar) || ((ar = read(fd, buff, READ_SIZE)) && ar > 0))
 	{
 		if (!(pos < ar))
 			pos = 0;
