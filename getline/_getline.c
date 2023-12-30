@@ -19,7 +19,7 @@ char *_getline(const int fd)
 		pos = 0;
 		ar = 0;
 	}
-	while ((pos < ar) || ((ar = read(fd, buff, READ_SIZE)) && ar > 0))
+	while ((pos < ar) || ((ar = read(fd, buff, READ_SIZE)) && ar > -1))
 	{
 		if (!(pos < ar))
 			pos = 0;
