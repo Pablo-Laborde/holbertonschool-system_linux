@@ -14,6 +14,11 @@ char *_getline(const int fd)
 	int i = pos, len = 0, cl = 0;
 	char *str = NULL, *aux = NULL;
 
+	if (fd == -1)
+	{
+		pos = 0;
+		ar = 0;
+	}
 	while ((pos < ar) || ((ar = read(fd, buff, READ_SIZE)) && ar > 0))
 	{
 		if (!(pos < ar))
