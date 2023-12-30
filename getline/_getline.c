@@ -9,13 +9,14 @@
 char *_getline(const int fd)
 {
 	static char buff[READ_SIZE];
-	static int pos;
+	static int pos, fda;
 	static ssize_t ar;
 	int i = pos, len = 0, cl = 0;
 	char *str = NULL, *aux = NULL;
 
-	if (fd == -1)
+	if (fd == -1 || fd != fda)
 	{
+		fda = fd;
 		pos = 0;
 		ar = 0;
 	}
