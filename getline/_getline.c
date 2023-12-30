@@ -8,26 +8,18 @@
 */
 char *_getline(const int fd)
 {
-	static char
-		buff[READ_SIZE];
-	static int
-		pos = 0;
-	static ssize_t
-		ar = 0;
-	int
-		i = pos,
-		len = 0,
-		cl = 0;
-	char
-		*str = NULL,
-		*aux = NULL;
+	static char buff[READ_SIZE];
+	static int pos = 0;
+	static ssize_t ar = 0;
+	int i = pos, len = 0, cl = 0;
+	char *str = NULL, *aux = NULL;
 
 	while ((pos < ar) || (ar = read(fd, buff, READ_SIZE)))
 	{
 		if (!(pos < ar))
 			pos = 0;
 		i = pos;
-		pos = end_line(buff, pos);
+		pos = end_line(buff, pos, ar);
 		len = pos - i + 1;
 		if (!(pos < ar))
 			len--;
@@ -58,14 +50,15 @@ char *_getline(const int fd)
 * end_line- function
 * @str: char*
 * @pos: int
+* @ar: int
 * Return: int
 */
-int end_line(char *str, int pos)
+int end_line(char *str, int pos, int ar)
 {
 	int
 		i = pos;
 
-	while (str[i] && (str[i] != '\n') && (i < READ_SIZE))
+	while (str[i] && (str[i] != '\n') && (i < ar))
 		i++;
 	return (i);
 }

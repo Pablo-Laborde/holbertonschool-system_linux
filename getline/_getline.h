@@ -10,7 +10,7 @@
 
 /*	Functions		*/
 char *_getline(const int fd);
-int end_line(char *str, int pos);
+int end_line(char *str, int pos, int ar);
 char *join_strings(char *str1, char *str2);
 char *cpy_string(char *str, int amt);
 
