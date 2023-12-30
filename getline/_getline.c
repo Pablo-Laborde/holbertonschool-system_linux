@@ -11,60 +11,63 @@ char *_getline(const int fd)
 	static char
 		buff[READ_SIZE];
 	static int
-		pos = 0,
-		flag = 1;
-	ssize_t
+		pos = 0;
+	static ssize_t
 		ar = 0;
 	int
 		i = pos,
-		len = 0;
+		len = 0,
+		cl = 0;
 	char
 		*str = NULL,
 		*aux = NULL;
 
-	(void)ar;
-	(void)aux;
-	while (!str)
+	while ((pos < ar) || (ar = read(fd, buff, READ_SIZE)))
 	{
-		if (flag)
-		{
-			ar = read(fd, buff, READ_SIZE);
-			flag = 0;
+		if (!(pos < ar))
 			pos = 0;
-			i = 0;
-			if (str)
-			{
-				aux = str;
-				str = NULL;
-			}
-		}
-		if (buff[pos])
+		i = pos;
+		pos = end_line(buff, pos);
+		len = pos - i + 1;
+		if (!(pos < ar))
+			len--;
+		else
 		{
-			while (buff[pos] && (pos < READ_SIZE))
-			{
-				if (buff[pos] == '\n')
-					break;
-				pos++;
-			}
-			if (pos == READ_SIZE)
-			{
-				pos--;
-				flag = 1;
-			}
-			len = pos - i + 1;
-			str = cpy_string(&buff[i], len);
-			if (str[len - 1] == '\n')
-				str[len - 1] = '\0';
-			if (buff[pos])
-				pos++;
-			if (aux)
-			{
-				str = join_strings(aux, str);
-				aux = NULL;
-			}
+			pos++;
+			cl = 1;
 		}
+		aux = cpy_string(&buff[i], len);
+		if (aux)
+		{
+			if (aux[len - 1] == '\n')
+				aux[len - 1] = '\0';
+			if (str)
+				str = join_strings(str, aux);
+			else
+				str = aux;
+			aux = NULL;
+		}
+		if (cl)
+			break;
 	}
 	return (str);
+}
+
+
+/**
+* end_line- function
+* @str: char*
+* @pos: int
+* Return: int
+*/
+int end_line(char *str, int pos)
+{
+	int
+		i = pos;
+
+	while (str[i] && (str[i] != '\n') && (i < READ_SIZE))
+		i++;
+	return (i);
 }
 
 
