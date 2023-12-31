@@ -37,12 +37,7 @@ char *_getline(const int fd)
 		aux = cpy_string(&buff[i], len);
 		if (aux)
 		{
-			if (aux[len - 1] == '\n')
-				aux[len - 1] = '\0';
-			if (str)
-				str = join_strings(str, aux);
-			else
-				str = aux;
+			str = (str) ? join_strings(str, aux) : aux;
 			aux = NULL;
 		}
 		if (cl)
@@ -128,6 +123,8 @@ char *cpy_string(char *str, int amt)
 			for (; i < amt; i++)
 				new_str[i] = str[i];
 			new_str[i] = '\0';
+			if (new_str[i - 1] == '\n')
+				new_str[i - 1] = '\0';
 		}
 	}
 	return (new_str);
