@@ -18,9 +18,7 @@ int main(int ac, char **av, char **env)
 	/*	get the path -> pass to disdir	*/
 	if (ac == 1)
 	{
-		path = getpath(env);
-		directory = dirch(path);
-		pdf(directory, path, filename, mode);
+		tosum(env, dirpath, filename, filename, mode);
 		printf("\n");
 	}
 	else
@@ -39,18 +37,7 @@ int main(int ac, char **av, char **env)
 			else
 			{
 				dirpath = folch(av[pos], &filename, &mode);
-				if (dirpath)
-				{
-					directory = dirch(dirpath);
-					pdf(directory, dirpath, filename, mode);
-					free(dirpath);
-				}
-				else
-				{
-					path = getpath(env);
-					directory = dirch(path);
-					pdf(directory, path, av[pos], mode);
-				}
+				tosum(env, dirpath, filename, av[pos], mode);
 			}
 			printf("\n");
 			if ((ac > 2) && (pos < ac - 1))
@@ -59,6 +46,35 @@ int main(int ac, char **av, char **env)
 	}
 	closedir(directory);
 	return (errno);
+}
+
+
+/**
+* tosum- func
+* @env: char**
+* @dirpath: char*
+* @filename: char*
+* @av: char*
+* @mode: int
+* Return: void
+*/
+void tosum(char **env, char *dirpath, char *filename, char *av, int mode)
+{
+	char *path =NULL;
+	DIR *directory = NULL;
+
+	if (dirpath)
+	{
+		directory = dirch(dirpath);
+		pdf(directory, dirpath, filename, mode);
+		free(dirpath);
+	}
+	else
+	{
+		path = getpath(env);
+		directory = dirch(path);
+		pdf(directory, path, av, mode);
+	}
 }
 
 
