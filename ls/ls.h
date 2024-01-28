@@ -16,21 +16,23 @@
 /*	Functions	*/
 
 /*  print directory or file */
-int pdf(DIR* dir,char* dp, char* fn, int mode);
+int pdf(DIR *dir, char *dp, char *fn, int mode);
+
+void tosum(char **env, char *dirpath, char *filename, char *av, int mode);
 
 /*  check folder    */
-char* folch(char* str, char** filename, int* mode);
+char *folch(char *str, char **filename, int *mode);
 
 /*  checks if path is a directory   */
-DIR* dirch(char* path);
+DIR *dirch(char *path);
 
 /*	getpath returns the current path	*/
-char* getpath(char** env);
+char *getpath(char **env);
 
 /*	pwdch checks if the string begins with "PWD"	*/
-int pwdch(char* str);
+int pwdch(char *str);
 
 /*  string compare  */
-int strc(char* str1, char* str2);
+int strc(char *str1, char *str2);
 
 #endif
