@@ -50,36 +50,6 @@ int main(int ac, char **av, char **env)
 
 
 /**
-* tosum- func
-* @env: char**
-* @dirpath: char*
-* @filename: char*
-* @av: char*
-* @mode: int
-* Return: void
-*/
-void tosum(char **env, char *dirpath, char *filename, char *av, int mode)
-{
-	char *path =NULL;
-	DIR *directory = NULL;
-
-	if (dirpath)
-	{
-		directory = dirch(dirpath);
-		pdf(directory, dirpath, filename, mode);
-		free(dirpath);
-	}
-	else
-	{
-		path = getpath(env);
-		directory = dirch(path);
-		pdf(directory, path, av, mode);
-	}
-	closedir(directory);
-}
-
-
-/**
 * pdf- function
 * @dir: DIR*
 * @dp: char*
@@ -93,16 +63,8 @@ int pdf(DIR *dir, char *dp, char *fn, int mode)
 
 	if (dir)
 	{
-		while ( (rd = readdir(dir)) )
+		while ((rd = readdir(dir)))
 		{
-			/*
-			printf("%s:\n", rd->d_name);
-			printf("%lu\n" ,rd->d_ino);
-			printf("%lu\n" ,rd->d_off);
-			printf("%hu\n" ,rd->d_reclen);
-			printf("%d\n" ,rd->d_type);
-			printf("%s\n", rd->d_name);
-			*/
 			if (!fn)
 			{
 				if (rd->d_name[0] != '.')
