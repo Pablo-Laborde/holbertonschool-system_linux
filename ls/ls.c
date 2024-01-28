@@ -12,7 +12,7 @@
 int main(int ac, char **av, char **env)
 {
 	int pos = 0, mode = 0;
-	char *path = NULL, *dirpath = NULL, *filename = NULL;
+	char *dirpath = NULL, *filename = NULL;
 	DIR *directory = NULL;
 
 	/*	get the path -> pass to disdir	*/
