@@ -7,17 +7,17 @@ def rpst():
     import os
     import sys
 
-    #get pid - os.getpid()
+    # get pid - os.getpid()
     pid = int(sys.argv[1])
     ss = sys.argv[2]
     ws = sys.argv[3]
-    #open /proc/pid/maps
+    # open /proc/pid/maps
     try:
         maps = open(f'/proc/{pid}/maps', 'r')
     except:
         print('error in maps')
         exit(1)
-    #loop to find heap in maps
+    # loop to find heap in maps
     for i in maps:
         line = i.split()
         if ('[heap]' in line):
@@ -30,7 +30,7 @@ def rpst():
             ino = line[4]
             pat = line[5]
             break
-    #if heap found it looks for the mem
+    # if heap found it looks for the mem
     if (found_data):
         try:
             mem = open(f'/proc/{pid}/mem', 'rb+')
@@ -48,4 +48,7 @@ def rpst():
             maps.close()
             exit(1)
         mem.seek(add_beg + sth)
-        mem.write(bytes(ws, 'ASCII'))
+        if len(ws) < len(ss):
+            mem.write(bytes(ws + '\0', 'ASCII'))
+        maps.close()
+        mem.close()
