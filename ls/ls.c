@@ -9,14 +9,11 @@
 * @env: char**
 * Return: int
 */
-int main(int ac, char** av, char** env)
+int main(int ac, char **av, char **env)
 {
-	int		pos = 0,
-			mode = 0;
-	char*	path = NULL,
-		*	dirpath = NULL,
-		*	filename = NULL;
-	DIR*	directory = NULL;
+	int pos = 0, mode = 0;
+	char *path = NULL, *dirpath = NULL, *filename = NULL;
+	DIR *directory = NULL;
 
 	/*	get the path -> pass to disdir	*/
 	if (ac == 1)
@@ -55,12 +52,12 @@ int main(int ac, char** av, char** env)
 					pdf(directory, path, av[pos], mode);
 				}
 			}
-			closedir(directory);
 			printf("\n");
 			if ((ac > 2) && (pos < ac - 1))
 				printf("\n");
 		}
 	}
+	closedir(directory);
 	return (errno);
 }
 
@@ -73,9 +70,9 @@ int main(int ac, char** av, char** env)
 * @mode: int
 * Return: int
 */
-int pdf(DIR* dir,char* dp, char* fn, int mode)
+int pdf(DIR *dir, char *dp, char *fn, int mode)
 {
-	struct	dirent*	rd = NULL;
+	struct dirent *rd = NULL;
 
 	if (dir)
 	{
@@ -114,12 +111,10 @@ int pdf(DIR* dir,char* dp, char* fn, int mode)
 * @mode: int*
 * Return: char*
 */
-char* folch(char* str, char** filename, int* mode)
+char *folch(char *str, char **filename, int *mode)
 {
-	int		i = 0,
-			j = 0,
-			slashpos = 0;
-	char*	foldername = NULL;
+	int i = 0, j = 0, slashpos = 0;
+	char *foldername = NULL;
 
 	if (str)
 	{
@@ -150,9 +145,9 @@ char* folch(char* str, char** filename, int* mode)
 * @path: char*
 * Return: DIR*
 */
-DIR* dirch(char* path)
+DIR *dirch(char *path)
 {
-	DIR*	directory = NULL;
+	DIR *directory = NULL;
 
 	directory = opendir(path);
 	return (directory);
@@ -164,10 +159,9 @@ DIR* dirch(char* path)
 * @env: char**
 * Return: char*
 */
-char* getpath(char** env)
+char *getpath(char **env)
 {
-	int		j = 0,
-			pos = 0;
+	int j = 0, pos = 0;
 
 	/*	get the current pwd	*/
 		while (!pwdch(env[j]))
@@ -185,11 +179,10 @@ char* getpath(char** env)
 * @str: char*
 * Return: int
 */
-int pwdch(char* str)
+int pwdch(char *str)
 {
-	int		pos = 0,
-			flag = 1;
-	char*	name = "PWD";
+	int pos = 0, flag = 1;
+	char *name = "PWD";
 
 	while (name[pos])
 	{
@@ -207,10 +200,9 @@ int pwdch(char* str)
 * @str2: char*
 * Return: int
 */
-int strc(char* str1, char* str2)
+int strc(char *str1, char *str2)
 {
-	int		i = 0,
-			eq = 0;
+	int i = 0, eq = 0;
 
 	if (str1 && str2)
 		do
