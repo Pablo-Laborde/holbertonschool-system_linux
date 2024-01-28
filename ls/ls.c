@@ -75,6 +75,7 @@ void tosum(char **env, char *dirpath, char *filename, char *av, int mode)
 		directory = dirch(path);
 		pdf(directory, path, av, mode);
 	}
+	closedir(directory);
 }
 
 
