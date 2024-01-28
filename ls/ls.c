@@ -105,7 +105,7 @@ char *folch(char *str, char **filename, int *mode)
 		}
 		if (slashpos > 0)
 		{
-			foldername = malloc(slashpos + 1)
+			foldername = malloc(slashpos + 1);
 			if (foldername)
 			{
 				for (j = 0; j < slashpos; j++)
