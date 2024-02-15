@@ -7,6 +7,9 @@ section .text
 
 asm_strlen:
 
+	push	rbp
+	mov		rbp, rsp
+
 	mov		rsi, rax
 	mov		r8, 0
 
@@ -19,6 +22,9 @@ len:
 
 
 end:
-	mov rax, r8
+	mov		rax, r8
+
+	mov		rsp, rbp
+	pop		rbp
 
 	ret
