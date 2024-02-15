@@ -11,7 +11,7 @@ asm_strlen:
 	mov		rbp, rsp
 
 	mov		rsi, rax
-	mov		r8, 0
+	mov		r8, 0h
 
 len:
 	cmp		byte [rsi], 0
