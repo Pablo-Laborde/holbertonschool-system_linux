@@ -10,13 +10,13 @@ asm_strlen:
 	push	rbp
 	mov		rbp, rsp
 
-	mov		rsi, rax
+	;mov		rsi, rax
 	mov		r8, 0h
 
 len:
-	cmp		byte [rsi], 0
+	cmp		byte [rdi], 0
 	je		end
-	inc		rsi
+	inc		rdi
 	inc		r8
 	jne		len
 
