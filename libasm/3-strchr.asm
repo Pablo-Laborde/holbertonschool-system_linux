@@ -10,10 +10,10 @@ asm_strchr:
 	mov		r10, rsi
 
 cmp_chars:
-	cmp		byte [r9 + r8], 0h
-	je		null
 	cmp		byte [r9 + r8], r10b
 	je		ret_add
+	cmp		byte [r9 + r8], 0h
+	je		null
 	inc		r8
 	jmp		cmp_chars
 
