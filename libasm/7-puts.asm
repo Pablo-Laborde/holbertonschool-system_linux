@@ -8,7 +8,7 @@ section .text
 		lea r8, [rdi]
 		push	rbp
 		mov		rbp, rsp
-	
+
 		mov		rax, rdi
 		call	asm_strlen
 
