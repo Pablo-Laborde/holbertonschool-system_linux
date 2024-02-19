@@ -12,12 +12,24 @@ section .text
 		cmp		r8, 0
 			jnz		return
 		cmp		byte [rsi + r9], 0
-			jz		ch_null
-		jnz		add_n_sub
+			jz		ch_fsn
+		cmp		byte [rdi + r9], 0
+			jz		ch_ssn
+		jmp		add_n_sub
 
-	ch_null:
+	ch_fsn:
 		cmp		byte [rdi + r9], 0
 			jz		return
+		movzx	rax, byte [rdi + r9]
+		add		r8, rax
+		jmp		return
+
+	ch_ssn:
+		cmp		byte [rsi + r9], 0
+			jz		return
+		movzx	rax, byte [rsi + r9]
+		sub		r8, rax
+		jmp		return
 
 	add_n_sub:
 		cmp		r10, 1
@@ -29,7 +41,7 @@ section .text
 		cmp		r10, 0
 		jz		add_maths
 		jnz		sub_maths
-	
+
 	add_maths:
 		cmp		rax, 65
 		jl		add_any
@@ -56,7 +68,7 @@ section .text
 		cmp		r10, 0
 		jz		load_rdi
 		jnz		load_rsi
-		
+
 	load_rdi:
 		movzx	rax, byte [rdi + r9]
 		jmp		do_maths
