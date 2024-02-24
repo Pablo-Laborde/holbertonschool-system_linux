@@ -12,6 +12,12 @@ int handle_signal(void)
 	return (0);
 }
 
+
+/**
+* signal_handler- func
+* @sig: int
+* Return: void
+*/
 void signal_handler(int sig)
 {
 	printf("Gotcha! [%d]\n", sig);
