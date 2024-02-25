@@ -3,8 +3,7 @@
 
 /**
 * current_handler_signal- func
-* @x: int
-* Return: void
+* Return: function pointer
 */
 void (*current_handler_signal(void))(int)
 {
