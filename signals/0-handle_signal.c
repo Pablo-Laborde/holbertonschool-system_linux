@@ -7,7 +7,10 @@
 */
 int handle_signal(void)
 {
-	if ((signal(SIGINT, signal_handler) == SIG_ERR))
+	void (*handler)(int) = NULL;
+
+	handler = signal(SIGINT, signal_handler);
+	if (handler == SIG_ERR)
 		return (-1);
 	return (0);
 }
