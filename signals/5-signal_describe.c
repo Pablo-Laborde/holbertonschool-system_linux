@@ -3,6 +3,8 @@
 
 /**
 * main- func
+* @ac: int
+* @av: char **
 * Return: int
 */
 int main(int ac, char **av)
