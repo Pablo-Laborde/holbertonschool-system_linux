@@ -7,7 +7,7 @@
 */
 int trace_signal_sender(void)
 {
-	if ((signal(SIGQUIT, sigfunc) == SIG_ERR))
+	if (signal(SIGQUIT, sigfunc) == SIG_ERR)
 		return (-1);
 	return (0);
 }
