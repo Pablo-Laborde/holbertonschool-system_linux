@@ -8,5 +8,8 @@
 */
 void (*current_handler_signal(void))(int)
 {
-	return (signal_handler);
+	void (*handler)(int);
+
+	signal(SIGINT, handler);
+	return (handler);
 }
