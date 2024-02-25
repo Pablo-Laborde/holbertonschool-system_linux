@@ -21,6 +21,7 @@ int trace_signal_sender(void)
 void sigfunc(int sig)
 {
 	(void)sig;
+
 	printf("SIGQUIT sent by [%d]\n", getppid());
 	fflush(stdout);
 }
