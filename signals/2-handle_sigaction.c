@@ -1,5 +1,6 @@
 #include "signals.h"
 
+
 /**
 * handle_sigaction- func
 * Return: int
@@ -16,6 +17,7 @@ int handle_sigaction(void)
 	return (sigaction(SIGINT, act, oldact));
 }
 
+
 /**
 * signal_handler- func
 * @sig: int
@@ -25,4 +27,3 @@ void signal_handler(int sig)
 {
 	printf("Gotcha! [%d]\n", sig);
 }
-
