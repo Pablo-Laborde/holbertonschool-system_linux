@@ -15,3 +15,14 @@ int handle_sigaction(void)
 	act->sa_handler = signal_handler;
 	return (sigaction(SIGINT, act, oldact));
 }
+
+/**
+* signal_handler- func
+* @sig: int
+* Return: void
+*/
+void signal_handler(int sig)
+{
+	printf("Gotcha! [%d]\n", sig);
+}
+
