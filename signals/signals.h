@@ -6,12 +6,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <unistd.h>
+
 
 int handle_signal(void);
 void signal_handler(int sig);
 void (*current_handler_signal(void))(int);
 int handle_sigaction(void);
 void (*current_handler_sigaction(void))(int);
+int trace_signal_sender(void);
+void sigfunc(int sig);
 
 
 #endif
