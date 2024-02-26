@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 
 #include <unistd.h>
 
@@ -17,6 +18,7 @@ int handle_sigaction(void);
 void (*current_handler_sigaction(void))(int);
 int trace_signal_sender(void);
 void sigfunc(int sig);
+void sigIntFunc(int sig);
 
 
 #endif
