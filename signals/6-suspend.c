@@ -10,6 +10,8 @@ int main(void)
 	if (signal(SIGINT, sigIntFunc) == SIG_ERR)
 		return (EXIT_FAILURE);
 	pause();
+	printf("Signal received\n");
+	fflush(stdout);
 	return (EXIT_SUCCESS);
 }
 
