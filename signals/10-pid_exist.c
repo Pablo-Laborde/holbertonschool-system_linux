@@ -8,5 +8,5 @@
 */
 int pid_exist(pid_t pid)
 {
-	return (!kill(pid, SIGCONT)? 0 : 1);
+	return (!kill(pid, SIGCONT)? 1 : 0);
 }
