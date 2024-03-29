@@ -85,4 +85,3 @@ void def_64(int fd, data_t *data)
 	data->e_shnum = h2.e_shnum;
 	data->e_shstrndx = h2.e_shstrndx;
 }
-
