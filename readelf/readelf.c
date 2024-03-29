@@ -66,6 +66,7 @@ void header_printer(data_t *data)
 	switch (data->e_ident[EI_DATA]) {
 		case ELFDATANONE:
 			str = "Unknown data format";
+			break;
 		case ELFDATA2LSB:
 			str = "2's complement, little-endian";
 			break;
@@ -79,6 +80,7 @@ void header_printer(data_t *data)
 	switch (data->e_ident[EI_VERSION]) {
 		case EV_NONE:
 			str = "Invalid version";
+			break;
 		case EV_CURRENT:
 			str = "(current)";
 			break;
