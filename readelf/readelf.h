@@ -35,21 +35,7 @@
 
 /* Functions */
 	void header_printer(data_t *data);
-
-	/* def_data.c */
-		void def_data(int fd, data_t *data);
-		void def_32(int fd, data_t *data);
-		void def_64(int fd, data_t *data);
-
-	/* p1.c */
-		void hexamaker(int n, char *c);
-		void p_mc(data_t *data);
-		void p_dv(data_t *data);
-		void p_oa(data_t *data);
-		void p_at(data_t *data);
-
-	/* p2.c */
-		void p_m(data_t *data);
-		void p_many(data_t *data);
+	void hexamaker(int n, char *c);
+	void def_data(int fd, data_t *data);
 
 #endif
