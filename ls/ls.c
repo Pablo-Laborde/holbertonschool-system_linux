@@ -70,7 +70,7 @@ int manage_files(int ac, char **av, int flags)
 	for (; i < ac; i++)
 		if ((lstat(av[i], &ss) == -1) && ((av[i][0] != '-') || !av[i][1]))
 		{
-			printf("./hls: cannot access '%s': No such file or directory\n",
+			printf("./hls: cannot access %s: No such file or directory\n",
 				av[i]);
 			printed |= 1;
 		}
