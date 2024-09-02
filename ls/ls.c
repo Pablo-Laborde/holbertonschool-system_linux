@@ -54,8 +54,9 @@ void pf(char *path, int flags)
 
 /**
 * manage_files- func
+* @ac: int
+* @av: char **
 * @flags: int
-* @path: char *
 * Return: void
 */
 int manage_files(int ac, char **av, int flags)
