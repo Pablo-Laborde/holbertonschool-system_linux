@@ -6,149 +6,157 @@
 * main- function
 * @ac: int
 * @av: char**
-* @env: char**
 * Return: int
 */
-int main(int ac, char **av, char **env)
+int main(int ac, char **av)
 {
-	int pos = 0, mode = 0;
-	char *dirpath = NULL, *filename = NULL;
-	DIR *directory = NULL;
+	int flags = 0, i = 1, af = 0, ap = 0;
+	struct stat ss;
 
-	/*	get the path -> pass to disdir	*/
-	if (ac == 1)
+	af += set_flags(ac, av, &flags);
+	if (ac - af - 1)
 	{
-		tosum(env, dirpath, filename, filename, mode);
-		printf("\n");
+		ap = manage_files(ac, av, flags);
+		if (ac - af - 2)
+			ap |= 1;
+		for (i = 1; i < ac; i++)
+		{
+			if (!lstat(av[i], &ss) && (S_ISDIR(ss.st_mode) & 1))
+			{
+				(ap & 2) ? printf("\n") : (ap |= 2);
+				if (ap & 1)
+					printf("%s:\n", av[i]);
+				print_dir(flags, av[i]);
+			}
+		}
 	}
 	else
-	{
-		/*	read each path or filename from av	*/
-		for (pos = 1; pos < ac; pos++)
-		{
-			mode = 0;
-			directory = dirch(av[pos]);
-			if (directory)
-			{
-				if (ac > 2)
-					printf("%s:\n", av[pos]);
-				pdf(directory, av[pos], filename, mode);
-			}
-			else
-			{
-				dirpath = folch(av[pos], &filename, &mode);
-				tosum(env, dirpath, filename, av[pos], mode);
-			}
-			printf("\n");
-			if ((ac > 2) && (pos < ac - 1))
-				printf("\n");
-		}
-	}
-	closedir(directory);
+		print_dir(flags, ".");
 	return (errno);
 }
 
 
 /**
-* pdf- function
-* @dir: DIR*
-* @dp: char*
-* @fn: char*
-* @mode: int
+* pf- func
+* @path: char *
+* @flags: int
+* Return: void
+*/
+void pf(char *path, int flags)
+{
+	if (flags & 8)
+	{
+		printf("file info ");
+	}
+	printf("%s", path);
+}
+
+
+/**
+* manage_files- func
+* @flags: int
+* @path: char *
+* Return: void
+*/
+int manage_files(int ac, char **av, int flags)
+{
+	int i = 1, separator = 0, printed = 0;
+	char sepc = ' ';
+	struct stat ss;
+
+	if ((flags & 1) || (flags & 8))
+		sepc = '\n';
+	for (; i < ac; i++)
+		if ((lstat(av[i], &ss) == -1) && ((av[i][0] != '-') || !av[i][1]))
+		{
+			printf("./hls: cannot access '%s': No such file or directory\n", av[i]);
+			printed |= 1;
+		}
+	for (i = 1; i < ac; i++)
+	{
+		if (!lstat(av[i], &ss) && !S_ISDIR(ss.st_mode))
+		{
+			(separator) ? printf("%c", sepc) : (separator = 1);
+			pf(av[i], flags);
+			printed |= 3;
+		}
+	}
+	if (separator)
+		printf("\n");
+	return (printed);
+}
+
+
+/**
+* print_dir- func
+* @flags: int
+* @path: char *
 * Return: int
 */
-int pdf(DIR *dir, char *dp, char *fn, int mode)
+int print_dir(int flags, char *path)
 {
-	struct dirent *rd = NULL;
+	int separator = 0;
+	char sepc = ' ';
+	DIR *dir = NULL;
+	struct dirent *fd = NULL;
 
-	if (dir)
+	dir = opendir(path);
+	if (!dir)
+		exit(errno);
+	if ((flags & 1) || (flags & 8))
+		sepc = '\n';
+	fd = readdir(dir);
+	while (fd)
 	{
-		while ((rd = readdir(dir)))
+		if (fd->d_name[0] != '.')
 		{
-			if (!fn)
-			{
-				if (rd->d_name[0] != '.')
-					printf("%s\t", rd->d_name);
-			}
+			(separator) ? printf("%c", sepc) : (separator = 1);
+			pf(fd->d_name, flags);
+		}
+		fd = readdir(dir);
+	}
+	if (separator)
+		printf("\n");
+	closedir(dir);
+	return (1);
+}
+
+
+/**
+* set_flags- func
+* @ac: int *
+* @av: char **
+* @flags: int *
+* Return: int
+*/
+int set_flags(int ac, char **av, int *flags)
+{
+	int i = 1, amo = 0;
+
+	/*
+		1	=	1
+		2	=	a
+		4	=	A
+		8	=	l
+	*/
+	for (; i < ac; i++)
+		if ((av[i][0] == '-') && (av[i][1] != '\0'))
+		{
+			if (av[i][1] == '1')
+				*flags |= 1;
+			else if (av[i][1] == 'a')
+				*flags |= 2;
+			else if (av[i][1] == 'A')
+				*flags |= 4;
+			else if (av[i][1] == 'l')
+				*flags |= 8;
 			else
-				if (!strc(rd->d_name, fn))
-				{
-					if (mode == 1)
-						printf("%s/", dp);
-					printf("%s\t", rd->d_name);
-				}
-		}
-	}
-	return (errno);
-}
-
-
-/**
-* folch- function
-* @str: char*
-* @filename: char**
-* @mode: int*
-* Return: char*
-*/
-char *folch(char *str, char **filename, int *mode)
-{
-	int i = 0, j = 0, slashpos = 0;
-	char *foldername = NULL;
-
-	if (str)
-	{
-		while (str[i])
-		{
-			if (str[i] == '/')
-				slashpos = i;
-			i++;
-		}
-		if (slashpos > 0)
-		{
-			foldername = malloc(slashpos + 1);
-			if (foldername)
 			{
-				for (j = 0; j < slashpos; j++)
-					foldername[j] = str[j];
-				foldername[j] = '\0';
+				printf("hls: invalid option -- '%c'\n", av[i][1]);
+				printf("Try 'hls --help' for more information.\n");
+				exit(errno);
 			}
-			*filename = &str[slashpos + 1];
-			*mode = 1;
+			amo++;
 		}
-	}
-	return (foldername);
-}
-
-
-/**
-* dirch- function
-* @path: char*
-* Return: DIR*
-*/
-DIR *dirch(char *path)
-{
-	DIR *directory = NULL;
-
-	directory = opendir(path);
-	return (directory);
-}
-
-
-/**
-* getpath- function
-* @env: char**
-* Return: char*
-*/
-char *getpath(char **env)
-{
-	int j = 0, pos = 0;
-
-	/*	get the current pwd	*/
-		while (!pwdch(env[j]))
-			j++;
-		/*	printf("%s\n", env[j]);	*/
-	while (env[j][pos] != '=')
-		pos++;
-	/*	printf("%s\n", &env[j][pos + 1]);	*/
-	return (&(env[j][pos + 1]));
+	return (amo);
 }

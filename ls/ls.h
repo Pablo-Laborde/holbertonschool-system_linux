@@ -10,29 +10,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 
 
 /*	Functions	*/
+void pf(char *path, int flags);
+int manage_files(int ac, char **av, int flags);
+int print_dir(int flags, char *path);
+int set_flags(int ac, char **av, int *flags);
 
-/*  print directory or file */
-int pdf(DIR *dir, char *dp, char *fn, int mode);
-
-void tosum(char **env, char *dirpath, char *filename, char *av, int mode);
-
-/*  check folder    */
-char *folch(char *str, char **filename, int *mode);
-
-/*  checks if path is a directory   */
-DIR *dirch(char *path);
-
-/*	getpath returns the current path	*/
-char *getpath(char **env);
-
-/*	pwdch checks if the string begins with "PWD"	*/
-int pwdch(char *str);
-
-/*  string compare  */
-int strc(char *str1, char *str2);
 
 #endif
