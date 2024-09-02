@@ -90,6 +90,30 @@ int manage_files(int ac, char **av, int flags)
 
 
 /**
+* check_condition- func
+* @flags: int
+* @fn: char *
+* Return: int
+*/
+int check_condition(int flags, char *fn)
+{
+	if (fn[0] != '.')
+		return (1);
+	if (flags & 4)
+	{
+		if (!fn[1])
+			return (0);
+		if ((fn[1] == '.') && !fn[2])
+			return (0);
+		return (1);
+	}
+	if (flags & 2)
+		return (1);
+	return (0);
+}
+
+
+/**
 * print_dir- func
 * @flags: int
 * @path: char *
@@ -110,7 +134,7 @@ int print_dir(int flags, char *path)
 	fd = readdir(dir);
 	while (fd)
 	{
-		if (fd->d_name[0] != '.')
+		if (check_condition(flags, fd->d_name))
 		{
 			(separator) ? printf("%c", sepc) : (separator = 1);
 			pf(fd->d_name, flags);
