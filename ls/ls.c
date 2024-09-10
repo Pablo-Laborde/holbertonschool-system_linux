@@ -38,17 +38,45 @@ int main(int ac, char **av)
 
 /**
 * pf- func
-* @path: char *
+* @name: char *
 * @flags: int
+* @ss: struct stat *
 * Return: void
 */
-void pf(char *path, int flags)
+void pf(char *name, int flags, struct stat *ss)
 {
+	int tpr = 0;
+	char perm[11], *time = NULL;
+	struct passwd *pwd;
+	struct group *grp;
+
 	if (flags & 8)
 	{
-		printf("file info ");
+		/* directory or regular */
+		perm[0] = (S_ISDIR(ss->st_mode)) ? 'd' : '-';
+		/* user perm */
+		perm[1] = (S_IRUSR & ss->st_mode) ? 'r' : '-';
+		perm[2] = (S_IWUSR & ss->st_mode) ? 'w' : '-';
+		perm[3] = (S_IXUSR & ss->st_mode) ? 'x' : '-';
+		/* group perm */
+		perm[4] = (S_IRGRP & ss->st_mode) ? 'r' : '-';
+		perm[5] = (S_IWGRP & ss->st_mode) ? 'w' : '-';
+		perm[6] = (S_IXGRP & ss->st_mode) ? 'x' : '-';
+		/* other perm */
+		perm[7] = (S_IROTH & ss->st_mode) ? 'r' : '-';
+		perm[8] = (S_IWOTH & ss->st_mode) ? 'w' : '-';
+		perm[9] = (S_IXOTH & ss->st_mode) ? 'x' : '-';
+		perm[10] = '\0';
+		pwd = getpwuid(ss->st_uid);
+		grp = getgrgid(ss->st_gid);
+		time = ctime(&(ss->st_mtime));
+		printf("%s %ld %s %s %ld "
+		, perm, ss->st_nlink, pwd->pw_name, grp->gr_name, ss->st_size);
+		for (tpr = 4; tpr < 16; tpr++)
+			printf("%c", time[tpr]);
+		printf(" ");
 	}
-	printf("%s", path);
+	printf("%s", name);
 }
 
 
@@ -79,7 +107,7 @@ int manage_files(int ac, char **av, int flags)
 		if (!lstat(av[i], &ss) && !S_ISDIR(ss.st_mode))
 		{
 			(separator) ? printf("%c", sepc) : (separator = 1);
-			pf(av[i], flags);
+			pf(av[i], flags, &ss);
 			printed |= 3;
 		}
 	}
@@ -125,6 +153,7 @@ int print_dir(int flags, char *path)
 	char sepc = ' ';
 	DIR *dir = NULL;
 	struct dirent *fd = NULL;
+	struct stat ss;
 
 	dir = opendir(path);
 	if (!dir)
@@ -137,7 +166,8 @@ int print_dir(int flags, char *path)
 		if (check_condition(flags, fd->d_name))
 		{
 			(separator) ? printf("%c", sepc) : (separator = 1);
-			pf(fd->d_name, flags);
+			lstat(fd->d_name, &ss);
+			pf(fd->d_name, flags, &ss);
 		}
 		fd = readdir(dir);
 	}
