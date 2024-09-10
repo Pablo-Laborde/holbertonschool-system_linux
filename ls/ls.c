@@ -55,17 +55,17 @@ void pf(char *name, int flags, struct stat *ss)
 		/* directory or regular */
 		perm[0] = (S_ISDIR(ss->st_mode)) ? 'd' : '-';
 		/* user perm */
-		perm[1] = (S_IRUSR & ss->st_mode) ? 'r' : '-';
-		perm[2] = (S_IWUSR & ss->st_mode) ? 'w' : '-';
-		perm[3] = (S_IXUSR & ss->st_mode) ? 'x' : '-';
+		perm[1] = (ss->st_mode & S_IRUSR) ? 'r' : '-';
+		perm[2] = (ss->st_mode & S_IWUSR) ? 'w' : '-';
+		perm[3] = (ss->st_mode & S_IXUSR) ? 'x' : '-';
 		/* group perm */
-		perm[4] = (S_IRGRP & ss->st_mode) ? 'r' : '-';
-		perm[5] = (S_IWGRP & ss->st_mode) ? 'w' : '-';
-		perm[6] = (S_IXGRP & ss->st_mode) ? 'x' : '-';
+		perm[4] = (ss->st_mode & S_IRGRP) ? 'r' : '-';
+		perm[5] = (ss->st_mode & S_IWGRP) ? 'w' : '-';
+		perm[6] = (ss->st_mode & S_IXGRP) ? 'x' : '-';
 		/* other perm */
-		perm[7] = (S_IROTH & ss->st_mode) ? 'r' : '-';
-		perm[8] = (S_IWOTH & ss->st_mode) ? 'w' : '-';
-		perm[9] = (S_IXOTH & ss->st_mode) ? 'x' : '-';
+		perm[7] = (ss->st_mode & S_IROTH) ? 'r' : '-';
+		perm[8] = (ss->st_mode & S_IWOTH) ? 'w' : '-';
+		perm[9] = (ss->st_mode & S_IXOTH) ? 'x' : '-';
 		perm[10] = '\0';
 		pwd = getpwuid(ss->st_uid);
 		grp = getgrgid(ss->st_gid);
