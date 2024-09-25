@@ -7,48 +7,47 @@ def rpst():
     import os
     import sys
 
-    # get pid - os.getpid()
+    # Check & asign arguments
+    if (len(sys.argv) != 4):
+        print("Usgae: ./<exe name> <pid> <string to search> <string to write>")
+        exit(1)
     pid = int(sys.argv[1])
     ss = sys.argv[2]
-    ws = sys.argv[3]
-    # open /proc/pid/maps
+    sw = sys.argv[3]
+
+    # Open files
     try:
-        maps = open(f'/proc/{pid}/maps', 'r')
+        maps = open(f"/proc/{pid}/maps", 'r')
+        mem = open(f"/proc/{pid}/mem", 'r+b')
     except:
-        print('error in maps')
+        print("Couldn't open the files")
         exit(1)
-    # loop to find heap in maps
-    for i in maps:
-        line = i.split()
-        if ('[heap]' in line):
-            found_data = True
-            add = line[0].split('-')
-            add_beg = int(add[0], 16)
-            add_end = int(add[1], 16)
-            per = line[1]
-            off = int(line[2])
-            ino = line[4]
-            pat = line[5]
+
+    end = False
+    for line in maps:
+        if end:
             break
-    # if heap found it looks for the mem
-    if (found_data):
+        l = line.split()
+        if (l[-1] == "[stack]"):
+            end = True
+        char_address = l[0].split('-')
+        int_address = [int(each, 16) for each in char_address]
+        size = int_address[1] - int_address[0]
+        cur = os.lseek(mem.fileno(), int_address[0], os.SEEK_SET)
+        mc = mem.read(size)
         try:
-            mem = open(f'/proc/{pid}/mem', 'rb+')
+            pos = mc.index(bytes(ss, 'ascii'))
         except:
-            print('error in mem')
-            maps.close()
-            exit(1)
-        mem.seek(add_beg)
-        heap = mem.read(add_end - add_beg)
-        try:
-            sth = heap.index(bytes(ss, 'ASCII'))
-        except:
-            print("error in index")
-            mem.close()
-            maps.close()
-            exit(1)
-        mem.seek(add_beg + sth)
-        if len(ws) < len(ss):
-            mem.write(bytes(ws + '\0', 'ASCII'))
-        maps.close()
-        mem.close()
+            continue
+        os.lseek(mem.fileno(), (int_address[0] + pos), os.SEEK_SET)
+        mem.write(bytes(sw, 'ascii'))
+        mem.flush()
+        break
+
+    # Close files
+    maps.close()
+    mem.close()
+
+
+if (__name__ == "__main__"):
+    rpst()
