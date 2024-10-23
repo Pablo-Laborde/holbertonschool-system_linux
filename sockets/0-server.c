@@ -18,7 +18,10 @@ int main(void)
 	sa.sin_addr.s_addr = htonl(INADDR_ANY);
 	if (bind(s_fd, (struct sockaddr *)&sa, sizeof(struct sockaddr_in)) == -1)
 		exit(errno);
+	printf("Socket successfully created and binded.\n");
 	if (listen(s_fd, 1) == -1)
 		exit(errno);
+	while (1)
+	{}
 	return (0);
 }
