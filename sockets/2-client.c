@@ -27,10 +27,10 @@ int main(int ac, char **av)
 	hint.ai_canonname = NULL;
 	hint.ai_next = NULL;
 	if (getaddrinfo(av[1], av[2], &hint, &res))
-		exit(errno);
+		exit(EXIT_FAILURE);
 	c_fd = connect(s_fd, res->ai_addr, res->ai_addrlen);
 	if (c_fd == -1)
-		exit(errno);
+		exit(EXIT_FAILURE);
 	printf("Conected to %s:%s\n", av[1], av[2]);
-	return (0);
+	return (EXIT_SUCCESS);
 }
