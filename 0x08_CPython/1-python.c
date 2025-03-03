@@ -1,6 +1,11 @@
 #include <Python.h>
 
 
+
+/**
+ * print_python_list - func
+ * @p: PyObject
+ */
 void print_python_list(PyObject *p)
 {
 	long int size = 0, i = 0;
