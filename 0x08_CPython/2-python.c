@@ -54,7 +54,7 @@ void print_python_bytes(PyObject *p)
 	var_ob = &bytes->ob_base;
 	size = var_ob->ob_size;
 	aux_size = (size < 10) ? (size + 1) : 10;
-	printf("[*] bytes object info\n");
+	printf("[.] bytes object info\n");
 	printf("  size: %ld\n", size);
 	printf("  trying string: %s", bytes->ob_sval);
 	printf("\n");
