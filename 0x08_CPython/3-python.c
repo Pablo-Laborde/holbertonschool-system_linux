@@ -78,6 +78,7 @@ void print_python_bytes(PyObject *p)
  */
 void print_python_float(PyObject *p)
 {
+	int i = 0;
 	char buff[32];
 	PyFloatObject *fob = NULL;
 
@@ -90,15 +91,12 @@ void print_python_float(PyObject *p)
 	memset(buff, 0, sizeof(buff));
 	fob = (PyFloatObject *)p;
 	sprintf(buff, "%.16g", fob->ob_fval);
-	if (!buff[1])
+	while ((buff[i] != '.') && (buff[i]))
+		i++;
+	if (!buff[i])
 	{
-		buff[1] = '.';
-		buff[2] = '0';
-	}
-	if ((buff[0] == '-') && (!buff[2]))
-	{
-		buff[2] = '.';
-		buff[3] = '0';
+		buff[i] = '.';
+		buff[i + 1] = '0';
 	}
 	printf("  value: %s\n", buff);
 }
