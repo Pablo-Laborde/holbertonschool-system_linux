@@ -100,5 +100,5 @@ void print_python_float(PyObject *p)
 		buff[2] = '.';
 		buff[3] = '0';
 	}
-	printf("%s\n", buff);
+	printf("  value: %s\n", buff);
 }
