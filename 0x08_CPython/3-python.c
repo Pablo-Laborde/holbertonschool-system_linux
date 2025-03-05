@@ -17,6 +17,7 @@ void print_python_list(PyObject *p)
 	PyVarObject *var_ob = NULL;
 	PyListObject *list = NULL;
 
+	printf("[*] Python list info\n");
 	if (!PyList_Check(p))
 	{
 		printf("  [ERROR] Invalid List Object\n");
@@ -26,7 +27,6 @@ void print_python_list(PyObject *p)
 	var_ob = &list->ob_base;
 	ob = &var_ob->ob_base;
 	size = var_ob->ob_size;
-	printf("[*] Python list info\n");
 	printf("[*] Size of the Python List = %ld\n", size);
 	printf("[*] Allocated = %ld\n", list->allocated);
 	for (; i < size; i++)
