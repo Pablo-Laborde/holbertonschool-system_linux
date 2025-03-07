@@ -48,7 +48,6 @@ void print_python_string(PyObject *p)
 		ucs_to_utf8(pos, ascii_ob->state.kind, ascii_ob->length);
 		printf("\n");
 	}
-	printf("\n");
 }
 
 
