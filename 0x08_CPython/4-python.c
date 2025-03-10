@@ -9,13 +9,36 @@ void ucs_to_utf8(void *pos, int kind, Py_ssize_t length);
  * print_python_string - func
  * @p: PyObject
  */
+/*
+*void print_python_string(PyObject *p)
+*{
+*	char	*ascii = "compact ascii",
+*			*ucode = "compact unicode object";
+*	PyASCIIObject *str_ob = NULL;
+*
+*	setbuf(stdout, NULL);
+*	printf("[.] string object info\n");
+*	if (!PyUnicode_Check(p))
+*	{
+*		printf("  [ERROR] Invalid String Object\n");
+*		return;
+*	}
+*	str_ob = (PyASCIIObject *)p;
+*	printf("  type: %s\n", ((str_ob->state.ascii) ? ascii : ucode));
+*	printf("  length: %lu\n", str_ob->length);
+*	PyUnicode_READY(p);
+*	printf("  value: %s\n", PyUnicode_AsUTF8(p));
+*}
+*/
+
+/**
+ * print_python_string - func
+ * @p: PyObject
+ */
 void print_python_string(PyObject *p)
 {
-	char	*type = NULL,
-			*a = "comapct ascii",
-			*b = "legacy ascii",
-			*c = "comapct unicode object",
-			*d = "legacy string",
+	char	*ascii = "compact ascii",
+			*ucode = "compact unicode object",
 			*pos = NULL;
 	PyASCIIObject *ascii_ob = NULL;
 	PyCompactUnicodeObject *uni_ob = NULL;
@@ -29,20 +52,15 @@ void print_python_string(PyObject *p)
 	uni_ob = (PyCompactUnicodeObject *)p;
 	ascii_ob = (PyASCIIObject *)&uni_ob->_base;
 	if (ascii_ob->state.ascii)
-	{
-		type = (ascii_ob->state.compact) ? a : b;
-		pos = (char *)&ascii_ob->state;
-		pos += sizeof(ascii_ob->state) + 4;
-		printf("  type: %s\n", type);
-		printf("  length: %ld\n", ascii_ob->length);
+		pos = (char *)&ascii_ob->state + sizeof(ascii_ob->state) + 4;
+	else
+		pos = (char *)&uni_ob->utf8;
+	printf("  type: %s\n", ((ascii_ob->state.ascii) ? ascii : ucode));
+	printf("  length: %ld\n", ascii_ob->length);
+	if (ascii_ob->state.ascii)
 		printf("  value: %s\n", pos);
-	}
 	else
 	{
-		type = (ascii_ob->state.compact) ? c : d;
-		pos = (char *)&uni_ob->utf8;
-		printf("  type: %s\n", type);
-		printf("  length: %ld\n", ascii_ob->length);
 		printf("  value: ");
 		fflush(NULL);
 		ucs_to_utf8(pos, ascii_ob->state.kind, ascii_ob->length);
@@ -50,6 +68,7 @@ void print_python_string(PyObject *p)
 		printf("\n");
 	}
 }
+
 
 
 /**
