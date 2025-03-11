@@ -46,7 +46,12 @@ void print_python_int(PyObject *p)
 			n += prod;
 		}
 	}
-	printf("%c%lu\n", sign, n);
+	if (sign)
+	{
+		printf("%c", sign);
+		fflush(NULL);
+	}
+	printf("%lu\n", n);
 }
 
 
