@@ -22,13 +22,13 @@ void print_python_int(PyObject *p)
 		return;
 	}
 	lob = (PyLongObject *)p;
-	len = lob->ob_size;
+	len = *(Py_ssize_t *)((char *)lob + sizeof(PyObject));
 	if (len < 0)
 	{
 		len *= -1;
 		sign = '-';
 	}
-	dig = (digit *)lob->ob_digit;
+	dig = (digit *)((char *)lob + sizeof(PyObject) + sizeof(Py_ssize_t));;
 	if (!len)
 		n = 0;
 	else
