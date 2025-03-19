@@ -17,6 +17,5 @@ int main(int ac, char **av)
 		fflush(stdout);
 		return (EXIT_FAILURE);
 	}
-	sigqueue(atoi(av[1]), SIGINT, sv);
-	return (EXIT_SUCCESS);
+	return (sigqueue(atoi(av[1]), SIGINT, sv));
 }
