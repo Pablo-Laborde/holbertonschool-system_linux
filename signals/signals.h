@@ -16,8 +16,11 @@ void signal_handler(int sig);
 void (*current_handler_signal(void))(int);
 int handle_sigaction(void);
 void (*current_handler_sigaction(void))(int);
+
+/* ex 4 */
 int trace_signal_sender(void);
-void sigfunc(int sig);
+void sigfunc(int sig, siginfo_t *info, void *ucontext);
+
 void sigIntFunc(int sig);
 int pid_exist(pid_t pid);
 
