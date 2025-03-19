@@ -17,5 +17,7 @@ int main(int ac, char **av)
 		fflush(stdout);
 		return (EXIT_FAILURE);
 	}
-	return (sigqueue(atoi(av[1]), SIGINT, sv));
+	if (sigqueue(atoi(av[1]), SIGINT, sv) == -1)
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
