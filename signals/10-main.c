@@ -12,22 +12,22 @@
  */
 int main(int argc, const char *argv[])
 {
-    pid_t pid;
+	pid_t pid;
 
-    if (argc < 2)
-    {
-        fprintf(stderr, "Usage: %s <pid>\n", argv[0]);
-        return (EXIT_FAILURE);
-    }
-    pid = atoi(argv[1]);
+	if (argc < 2)
+	{
+		fprintf(stderr, "Usage: %s <pid>\n", argv[0]);
+		return (EXIT_FAILURE);
+	}
+	pid = atoi(argv[1]);
 
-    if (pid_exist(pid))
-    {
-        printf("PID %d exists\n", pid);
-    }
-    else
-    {
-        printf("PID %d does not exist\n", pid);
-    }
-    return (EXIT_SUCCESS);
+	if (pid_exist(pid))
+	{
+		printf("PID %d exists\n", pid);
+	}
+	else
+	{
+		printf("PID %d does not exist\n", pid);
+	}
+	return (EXIT_SUCCESS);
 }
