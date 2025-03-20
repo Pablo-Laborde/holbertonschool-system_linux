@@ -42,7 +42,7 @@ void p_osabi(data_t *data)
 			str = "UNIX - Stand-alone (embedded)";
 			break;
 		default:
-			printf("  OS/ABI:                            <unknown: %x>",
+			printf("  OS/ABI:                            <unknown: %x>\n",
 				data->e_ident[EI_OSABI]);
 			return;
 	}
