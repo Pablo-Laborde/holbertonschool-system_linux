@@ -45,19 +45,18 @@ void header_printer(data_t *data)
 	for (i = 0; i < EI_NIDENT; i++)
 	{
 		hexamaker(data->e_ident[i], hexa);
-		if (i)
-			printf(" ");
 		printf("%s", hexa);
+		printf(" ");
 	}
 	printf("\n");
 
 	/* Class */
 	switch (data->e_ident[EI_CLASS]) {
 		case ELFCLASS32:
-			str = "Elf32";
+			str = "ELF32";
 			break;
 		case ELFCLASS64:
-			str = "Elf64";
+			str = "ELF64";
 			break;
 	}
 	printf("  Class:                             %s\n", str);
@@ -68,10 +67,10 @@ void header_printer(data_t *data)
 			str = "Unknown data format";
 			break;
 		case ELFDATA2LSB:
-			str = "2's complement, little-endian";
+			str = "2's complement, little endian";
 			break;
 		case ELFDATA2MSB:
-			str = "2's complement, big-endian";
+			str = "2's complement, big endian";
 			break;
 	}
 	printf("  Data:                              %s\n", str);
@@ -91,34 +90,34 @@ void header_printer(data_t *data)
 	/* OS/ABI */
 	switch (data->e_ident[EI_OSABI]) {
 		case ELFOSABI_SYSV:
-			str = "Unix - System V";
+			str = "UNIX - System V";
 			break;
 		case ELFOSABI_HPUX:
-			str = "Unix - HP-UX";
+			str = "UNIX - HP-UX";
 			break;
 		case ELFOSABI_NETBSD:
-			str = "Unix - NetBSD";
+			str = "UNIX - NetBSD";
 			break;
 		case ELFOSABI_LINUX:
-			str = "Unix - Linux";
+			str = "UNIX - Linux";
 			break;
 		case ELFOSABI_SOLARIS:
-			str = "Unix - Solaris";
+			str = "UNIX - Solaris";
 			break;
 		case ELFOSABI_IRIX:
-			str = "Unix - IRIX";
+			str = "UNIX - IRIX";
 			break;
 		case ELFOSABI_FREEBSD:
-			str = "Unix - FreeBSD";
+			str = "UNIX - FreeBSD";
 			break;
 		case ELFOSABI_TRU64:
-			str = "Unix - TRU64";
+			str = "UNIX - TRU64";
 			break;
 		case ELFOSABI_ARM:
-			str = "Unix - ARM";
+			str = "UNIX - ARM";
 			break;
 		case ELFOSABI_STANDALONE:
-			str = "Unix - Stand-alone (embedded)";
+			str = "UNIX - Stand-alone (embedded)";
 			break;
 	}
 	printf("  OS/ABI:                            %s\n", str);
@@ -216,11 +215,11 @@ void header_printer(data_t *data)
 	printf("  Entry point address:               0x%lx\n", data->e_entry);
 
 	/* PHOFF */
-	printf("  Start of program headers:          %ld (bytes into the file)\n"
+	printf("  Start of program headers:          %ld (bytes into file)\n"
 				, data->e_phoff);
 
 	/* SHOFF */
-	printf("  Start of section headers:          %ld (bytes into the file)\n"
+	printf("  Start of section headers:          %ld (bytes into file)\n"
 				, data->e_shoff);
 
 	/* Flags */
