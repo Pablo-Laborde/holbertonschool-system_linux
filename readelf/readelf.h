@@ -38,4 +38,8 @@
 	void hexamaker(int n, char *c);
 	void def_data(int fd, data_t *data);
 
+/* auc_func_one.c */
+	void p_osabi(data_t *data);
+
+
 #endif
