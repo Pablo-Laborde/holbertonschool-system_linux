@@ -40,14 +40,23 @@
 	void hexamaker(int n, char *c);
 	void def_data(int fd, data_t *data);
 
-/* auc_func_one.c */
+/* aux_func_one.c */
 	void p_osabi(data_t *data);
 	void p_abiv(data_t *data);
 	void p_type(data_t *data, int type);
 	void p_machine(data_t *data, int machine);
 	void p_version(int version);
 
-/* auc_func_two.c */
+/* aux_func_two.c */
+	void p_entry(int entry);
+	void p_phoff(int phoff);
+	void p_shoff(int shoff);
+	void p_flags(int flags);
+	void p_ehsize(int ehsize);
+
+/* aux_func_three.c */
+	void p_phentsize(int phentsize);
+
 
 
 #endif

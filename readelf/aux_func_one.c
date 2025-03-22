@@ -81,7 +81,7 @@ void p_machine(data_t *data, int machine)
 	else if (machine == EM_M32)
 		printf("AT&T WE 32100\n");
 	else if (machine == EM_SPARC)
-		printf("Sun Microsystems SPARC\n");
+		printf("Sparc\n");
 	else if (machine == EM_386)
 		printf("Intel 80386\n");
 	else if (machine == EM_68K)
@@ -123,5 +123,5 @@ void p_machine(data_t *data, int machine)
  */
 void p_version(int version)
 {
-	printf("  Version:                           0x%d\n", version);
+	printf("  Version:                           %x\n", version);
 }

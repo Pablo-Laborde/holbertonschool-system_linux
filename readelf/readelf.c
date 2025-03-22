@@ -87,55 +87,21 @@ void header_printer(data_t *data)
 	printf("  Version:                           %d %s\n"
 				, data->e_ident[EI_VERSION], str);
 
-	/* OS/ABI */
-	p_osabi(data);
-
-	/* ABI Version */
-	p_abiv(data);
-
-	/* Type */
-	p_type(data, ((ibe) ? bswap_16(data->e_type) : data->e_type));
-
-	/* Machine */
-	p_machine(data, ((ibe) ? bswap_16(data->e_machine) : data->e_machine));
-
-	/* Version */
-	p_version(((ibe) ? bswap_16(data->e_version) : data->e_version));
-
-	/* Entry */
-	printf("  Entry point address:               0x%lx\n", data->e_entry);
-
-	/* PHOFF */
-	printf("  Start of program headers:          %ld (bytes into file)\n"
-				, data->e_phoff);
-
-	/* SHOFF */
-	printf("  Start of section headers:          %ld (bytes into file)\n"
-				, data->e_shoff);
-
-	/* Flags */
-	printf("  Flags:                             0x%d\n", data->e_flags);
-
-	/* Size of header */
-	printf("  Size of this header:               %d (bytes)\n"
-				, data->e_ehsize);
-
-	/* Size of program headers */
-	printf("  Size of program headers:           %d (bytes)\n"
-				, data->e_phentsize);
-
-	/* Number program headers */
-	printf("  Number of program headers:         %d\n", data->e_phnum);
-
-	/* Size of section headers */
-	printf("  Size of section headers:           %d (bytes)\n"
-				, data->e_shentsize);
-
-	/* Number section headers */
-	printf("  Number of section headers:         %d\n", data->e_shnum);
-
-	/* Section header string table index */
-	printf("  Section header string table index: %d\n", data->e_shstrndx);
+	p_osabi(data); /* OS/ABI */
+	p_abiv(data); /* ABI Version */
+	p_type(data, ((ibe) ? bswap_16(data->e_type) : data->e_type)); /* Type */
+	p_machine(data, ((ibe) ? bswap_16(data->e_machine) : data->e_machine)); /* Machine */
+	p_version(((ibe) ? bswap_32(data->e_version) : data->e_version)); /* Version */
+	p_entry(((ibe) ? bswap_32(data->e_entry) : data->e_entry)); /* Entry */
+	p_phoff(((ibe) ? bswap_32(data->e_phoff) : data->e_phoff)); /* PHOFF */
+	p_shoff(((ibe) ? bswap_32(data->e_shoff) : data->e_shoff)); /* SHOFF */
+	p_flags(((ibe) ? bswap_32(data->e_flags) : data->e_flags)); /* Flags */
+	p_ehsize(((ibe) ? bswap_16(data->e_ehsize) : data->e_ehsize)); /* Size of header */
+	p_phentsize(((ibe) ? bswap_16(data->e_phentsize) : data->e_phentsize)); /* Size of program headers */
+	p_phnum(((ibe) ? bswap_16(data->e_phnum) : data->e_phnum)); /* Number program headers */
+	p_shentsize(((ibe) ? bswap_16(data->e_shentsize) : data->e_shentsize)); /* Size of section headers */
+	p_shnum(((ibe) ? bswap_16(data->e_shnum) : data->e_shnum)); /* Number section headers */
+	p_shstrndx(((ibe) ? bswap_16(data->e_shstrndx) : data->e_shstrndx)); /* Section header string table index */
 }
 
 
