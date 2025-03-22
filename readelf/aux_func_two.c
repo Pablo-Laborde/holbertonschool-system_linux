@@ -40,7 +40,7 @@ void p_shoff(long int shoff)
  */
 void p_flags(int flags)
 {
-	printf("  Flags:                             %x\n", flags);
+	printf("  Flags:                             0x%x\n", flags);
 }
 
 

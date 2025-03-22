@@ -123,5 +123,5 @@ void p_machine(data_t *data, int machine)
  */
 void p_version(int version)
 {
-	printf("  Version:                           %x\n", version);
+	printf("  Version:                           0x%x\n", version);
 }
