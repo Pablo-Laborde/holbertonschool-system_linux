@@ -88,79 +88,19 @@ void header_printer(data_t *data)
 				, data->e_ident[EI_VERSION], str);
 
 	/* OS/ABI */
-	p_osabi(data, ibe);
+	p_osabi(data);
 
 	/* ABI Version */
-	printf("  ABI Version:                       %d\n"
-				, data->e_ident[EI_ABIVERSION]);
+	p_abiv(data);
 
 	/* Type */
-	p_type(data, ibe);
+	p_type(data, ((ibe) ? bswap_16(data->e_type) : data->e_type));
 
 	/* Machine */
-	switch (data->e_machine) {
-		case EM_NONE:
-			str = "An unknown machine";
-			break;
-		case EM_M32:
-			str = "AT&T WE 32100";
-			break;
-		case EM_SPARC:
-			str = "Sun Microsystems SPARC";
-			break;
-		case EM_386:
-			str = "Intel 80386";
-			break;
-		case EM_68K:
-			str = "Motorola 68000";
-			break;
-		case EM_88K:
-			str = "Motorola 88000";
-			break;
-		case EM_860:
-			str = "Intel 80860";
-			break;
-		case EM_MIPS:
-			str = "MIPS RS3000 (big-endian only)";
-			break;
-		case EM_PARISC:
-			str = "HP/PA";
-			break;
-		case EM_SPARC32PLUS:
-			str = "SPARC with enhanced instruction set";
-			break;
-		case EM_PPC:
-			str = "PowerPC";
-			break;
-		case EM_PPC64:
-			str = "PowerPC 64-bit";
-			break;
-		case EM_S390:
-			str = "IBM S/390";
-			break;
-		case EM_ARM:
-			str = "Advanced RISC Machines";
-			break;
-		case EM_SH:
-			str = "Renesas SuperH";
-			break;
-		case EM_SPARCV9:
-			str = "SPARC v9 64-bit";
-			break;
-		case EM_IA_64:
-			str = "Intel Itanium";
-			break;
-		case EM_X86_64:
-			str = "AMD x86-64";
-			break;
-		case EM_VAX:
-			str = "DEC Vax";
-			break;
-	}
-	printf("  Machine:                           %s\n", str);
+	p_machine(data, ((ibe) ? bswap_16(data->e_machine) : data->e_machine));
 
 	/* Version */
-	printf("  Version:                           0x%d\n", data->e_version);
+	p_version(((ibe) ? bswap_16(data->e_version) : data->e_version));
 
 	/* Entry */
 	printf("  Entry point address:               0x%lx\n", data->e_entry);

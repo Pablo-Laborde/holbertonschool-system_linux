@@ -41,8 +41,13 @@
 	void def_data(int fd, data_t *data);
 
 /* auc_func_one.c */
-	void p_osabi(data_t *data, int ibe);
-	void p_type(data_t *data, int ibe);
+	void p_osabi(data_t *data);
+	void p_abiv(data_t *data);
+	void p_type(data_t *data, int type);
+	void p_machine(data_t *data, int machine);
+	void p_version(int version);
+
+/* auc_func_two.c */
 
 
 #endif

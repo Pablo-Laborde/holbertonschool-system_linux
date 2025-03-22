@@ -1,2 +1,17 @@
+.PHONY: all clean
+CC = gcc
+CCFLAGS = -Wall -Werror -Wextra -pedantic
+EX0_FNAMES = readelf.c aux_func_one.c
+
+
+#default
+all: 0-hreadelf
+
+
+#exercise 0
 0-hreadelf:
-	gcc -Wall -Werror -Wextra -pedantic *.c -o 0-hreadelf
+	$(CC) $(CCFLAGS) $(EX0_FNAMES) -o 0-hreadelf
+
+
+clean:
+	rm 0-hreadelf
