@@ -4,9 +4,9 @@
 
 /**
  * p_version - func
- * @entry: int
+ * @entry: long unsigned int
  */
-void p_entry(int entry)
+void p_entry(long unsigned int entry)
 {
 	printf("  Entry point address:               0x%lx\n", entry);
 }
@@ -14,9 +14,9 @@ void p_entry(int entry)
 
 /**
  * p_phoff - func
- * @phoff: int
+ * @phoff: long int
  */
-void p_phoff(int phoff)
+void p_phoff(long int phoff)
 {
 	printf("  Start of program headers:          %ld (bytes into file)\n"
 				, phoff);
@@ -27,7 +27,7 @@ void p_phoff(int phoff)
  * p_shoff - func
  * @shoff: int
  */
-void p_shoff(int shoff)
+void p_shoff(long int shoff)
 {
 	printf("  Start of section headers:          %ld (bytes into file)\n"
 				, shoff);

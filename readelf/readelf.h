@@ -48,15 +48,18 @@
 	void p_version(int version);
 
 /* aux_func_two.c */
-	void p_entry(int entry);
-	void p_phoff(int phoff);
-	void p_shoff(int shoff);
+	void p_entry(long unsigned int entry);
+	void p_phoff(long int phoff);
+	void p_shoff(long int shoff);
 	void p_flags(int flags);
 	void p_ehsize(int ehsize);
 
 /* aux_func_three.c */
 	void p_phentsize(int phentsize);
-
+	void p_phnum(int phnum);
+	void p_shentsize(int shentsize);
+	void p_shnum(int shnum);
+	void p_shstrndx(int shstrndx);
 
 
 #endif
