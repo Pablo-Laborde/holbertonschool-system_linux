@@ -17,7 +17,8 @@
 
 
 /* Structures */
-	typedef struct data_s {
+	typedef struct data_s
+	{
 		unsigned char e_ident[EI_NIDENT];
 		uint16_t      e_type;
 		uint16_t      e_machine;
@@ -43,7 +44,7 @@
 
 /* aux_func_zero.c */
 	void hexamaker(int n, char *c);
-	void p_magic(data_t *class)	;
+	void p_magic(data_t *class);
 	void p_class(int class);
 	void p_data(int data);
 	void p_ver(int ver);
