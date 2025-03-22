@@ -61,7 +61,7 @@ void p_type(data_t *data, int type)
 	else if (type == ET_EXEC)
 		printf("EXEC (Executable file)\n");
 	else if (type == ET_DYN)
-		printf("DYN (Position-Independent Executable file)\n");
+		printf("DYN (Shared object file)\n");
 	else if (type == ET_CORE)
 		printf("CORE (Core file)\n");
 }
