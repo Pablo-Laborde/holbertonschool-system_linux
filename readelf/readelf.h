@@ -37,8 +37,16 @@
 
 /* Functions */
 	void header_printer(data_t *data);
-	void hexamaker(int n, char *c);
 	void def_data(int fd, data_t *data);
+	void init_32(Elf32_Ehdr *head, data_t *data);
+	void init_64(Elf64_Ehdr *head, data_t *data);
+
+/* aux_func_zero.c */
+	void hexamaker(int n, char *c);
+	void p_magic(data_t *class)	;
+	void p_class(int class);
+	void p_data(int data);
+	void p_ver(int ver);
 
 /* aux_func_one.c */
 	void p_osabi(data_t *data);
@@ -48,7 +56,7 @@
 	void p_version(int version);
 
 /* aux_func_two.c */
-	void p_entry(long unsigned int entry);
+	void p_entry(unsigned long int entry);
 	void p_phoff(long int phoff);
 	void p_shoff(long int shoff);
 	void p_flags(int flags);

@@ -1,7 +1,7 @@
 .PHONY: all clean
 CC = gcc
 CCFLAGS = -Wall -Werror -Wextra -pedantic
-EX0_FNAMES = readelf.c aux_func_one.c aux_func_two.c aux_func_three.c
+EX0_FNAMES = readelf.c aux_func_zero.c aux_func_one.c aux_func_two.c aux_func_three.c
 
 
 #default

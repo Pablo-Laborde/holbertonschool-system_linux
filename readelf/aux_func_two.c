@@ -6,7 +6,7 @@
  * p_version - func
  * @entry: long unsigned int
  */
-void p_entry(long unsigned int entry)
+void p_entry(unsigned long int entry)
 {
 	printf("  Entry point address:               0x%lx\n", entry);
 }
