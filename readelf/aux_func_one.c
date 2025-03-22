@@ -111,7 +111,7 @@ void p_machine(data_t *data, int machine)
 	else if (machine == EM_IA_64)
 		printf("Intel Itanium\n");
 	else if (machine == EM_X86_64)
-		printf("AMD x86-64\n");
+		printf("Advanced Micro Devices X86-64\n");
 	else if (machine == EM_VAX)
 		printf("DEC Vax\n");
 }
