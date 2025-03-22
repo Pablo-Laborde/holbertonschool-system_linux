@@ -34,7 +34,7 @@ int main(int ac, char **av)
 */
 void header_printer(data_t *data)
 {
-	int i = 0;
+	int i = 0, ibe = (data->e_ident[EI_DATA] == ELFDATA2MSB);
 	char hexa[3], *str;
 
 	printf("ELF Header:\n");
@@ -88,31 +88,14 @@ void header_printer(data_t *data)
 				, data->e_ident[EI_VERSION], str);
 
 	/* OS/ABI */
-	p_osabi(data);
+	p_osabi(data, ibe);
 
 	/* ABI Version */
 	printf("  ABI Version:                       %d\n"
 				, data->e_ident[EI_ABIVERSION]);
 
 	/* Type */
-	switch (data->e_type) {
-		case ET_NONE:
-			str = "NONE (Unknown type)";
-			break;
-		case ET_REL:
-			str = "REL (Relocatable file)";
-			break;
-		case ET_EXEC:
-			str = "EXEC (Executable file)";
-			break;
-		case ET_DYN:
-			str = "DYN (Position-Independent Executable file)";
-			break;
-		case ET_CORE:
-			str = "CORE (Core file)";
-			break;
-	}
-	printf("  Type:                              %s\n", str);
+	p_type(data, ibe);
 
 	/* Machine */
 	switch (data->e_machine) {

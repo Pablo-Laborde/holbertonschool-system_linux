@@ -3,6 +3,8 @@
 
 
 /* Libraries */
+	#include <byteswap.h>
+
 	#include <elf.h>
 	#include <errno.h>
 
@@ -39,7 +41,8 @@
 	void def_data(int fd, data_t *data);
 
 /* auc_func_one.c */
-	void p_osabi(data_t *data);
+	void p_osabi(data_t *data, int ibe);
+	void p_type(data_t *data, int ibe);
 
 
 #endif
