@@ -42,13 +42,16 @@ typedef struct data32_s
 /* hnm.c */
 int main(int ac, char **av);
 void elf_handler(int fd);
+int manage_32(int fd);
+int manage_64(int fd);
 
 /* dnm_32.c */
-int manage_32(int fd);
 int manage_sym32_list(int fd, data32_t *d, uint32_t size);
 int p_address(data32_t *d, Elf32_Sym *sym);
 int p_type(int fd, data32_t *d, Elf32_Sym *sym);
 int p_name(int fd, data32_t *d, Elf32_Sym *sym);
+
+/* dnm_64.c */
 
 
 #endif
