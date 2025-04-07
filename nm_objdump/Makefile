@@ -1,15 +1,15 @@
 .PHONY: all clean
 CC = gcc
 CCFLAGS = -g -Wall -Werror -Wextra -pedantic
-SRC = $(wildcard *.c)
-NAME = hnm
+NM_SRC = hnm.c dnm_32.c
+NM_NAME = hnm
 
 
 all: hnm
 
 
 hnm:
-	$(CC) $(CCFLAGS) $(SRC) -o $(NAME)
+	$(CC) $(CCFLAGS) $(NM_SRC) -o $(NM_NAME)
 
 
 clean:
