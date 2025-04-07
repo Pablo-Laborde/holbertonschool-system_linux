@@ -75,6 +75,10 @@ int p_type(int fd, data32_t *d, Elf32_Sym *sym)
 	st_shndx = (d->endianness) ? bswap_16(sym->st_shndx) : sym->st_shndx;
 	if (st_shndx == SHN_UNDEF)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
+	else if (st_shndx == SHN_ABS)
+		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'a' : 'A';
+	else if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'w' : 'W';
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_FUNC)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
@@ -129,21 +133,18 @@ int p_name(int fd, data32_t *d, Elf32_Sym *sym)
 	Elf32_Shdr sh_strtab;
 
 	st_name = (d->endianness) ? bswap_32(sym->st_name) : sym->st_name;
-	if (st_name)
-	{
-		sh_strtab_off = d->e_shoff + (d->sh_link * sizeof(Elf32_Shdr));
-		lseek(fd, sh_strtab_off, SEEK_SET);
-		if (read(fd, &sh_strtab, sizeof(Elf32_Shdr)) != sizeof(Elf32_Shdr))
+	sh_strtab_off = d->e_shoff + (d->sh_link * sizeof(Elf32_Shdr));
+	lseek(fd, sh_strtab_off, SEEK_SET);
+	if (read(fd, &sh_strtab, sizeof(Elf32_Shdr)) != sizeof(Elf32_Shdr))
+		return (1);
+	strtab_off = (d->endianness) ? bswap_32(sh_strtab.sh_offset)
+		: sh_strtab.sh_offset;
+	lseek(fd, (strtab_off + st_name), SEEK_SET);
+	do {
+		if (read(fd, &c, 1) != 1)
 			return (1);
-		strtab_off = (d->endianness) ? bswap_32(sh_strtab.sh_offset)
-			: sh_strtab.sh_offset;
-		lseek(fd, (strtab_off + st_name), SEEK_SET);
-		do {
-			if (read(fd, &c, 1) != 1)
-				return (1);
-			putchar(c);
-		} while (c);
-	}
+		putchar(c);
+	} while (c);
 	printf("\n");
 	return (0);
 }
