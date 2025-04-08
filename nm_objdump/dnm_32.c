@@ -75,13 +75,16 @@ int p_type(int fd, data32_t *d, Elf32_Sym *sym)
 	st_shndx = (d->endianness) ? bswap_16(sym->st_shndx) : sym->st_shndx;
 	if (st_shndx == SHN_UNDEF)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
+	else if (ELF32_ST_TYPE(sym->st_info) == STT_FILE)
+		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'f' : 'F';
 	else if (st_shndx == SHN_ABS)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'a' : 'A';
 	else if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'w' : 'W';
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_FUNC)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
-	else if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
+	else if ((ELF32_ST_TYPE(sym->st_info) == STT_OBJECT) ||
+		(ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE))
 	{
 		offset = d->e_shoff + st_shndx * sizeof(Elf32_Shdr);
 		lseek(fd, offset, SEEK_SET);
@@ -99,17 +102,23 @@ int p_type(int fd, data32_t *d, Elf32_Sym *sym)
 			if (read(fd, buffer + pos, 1) != 1)
 				return (1);
 		} while (buffer[pos] && (pos < 8));
-		if (!strcmp(buffer, ".bss"))
-			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
-		else if (!strcmp(buffer, ".rodata"))
-			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-		else /* (!strcmp(buffer, ".data")) */
-			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
+		if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
+		{
+			if (!strcmp(buffer, ".bss"))
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
+			else if (!strcmp(buffer, ".rodata"))
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
+			else /* (!strcmp(buffer, ".data")) */
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
+		}
+		else
+		{
+			if (!strcmp(buffer, ".text"))
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
+			else
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
+		}
 	}
-	else if (ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE)
-		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
-	else if (ELF32_ST_TYPE(sym->st_info) == STT_FILE)
-		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'f' : 'F';
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_COMMON)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'c' : 'C';
 	else
