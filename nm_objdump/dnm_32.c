@@ -251,7 +251,8 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	do {
 		if (read(fd, &n, 1) != 1)
 			return (1);
-		putchar(n);
+		if (n)
+			putchar(n);
 	} while (n);
 	printf("\n");
 	return (0);
