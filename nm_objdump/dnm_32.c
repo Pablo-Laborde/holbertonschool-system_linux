@@ -21,7 +21,7 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 		if (read(fd, &sym, sizeof(Elf32_Sym)) != sizeof(Elf32_Sym))
 			return (1);
 		pos += sizeof(Elf32_Sym);
-		if (!sym.st_value || !sym.st_name)
+		if (!sym.st_value /*|| !sym.st_name*/)
 			continue;
 		/*if (p_address(d, &sym) || p_type(fd, d, &sym) || p_name(fd, d, &sym))*/
 		if (p_all(fd, d, &sym))
@@ -179,7 +179,7 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	st_value = (d->endianness) ? bswap_32(sym->st_value) : sym->st_value;
 	st_shndx = (d->endianness) ? bswap_16(sym->st_shndx) : sym->st_shndx;
 
-	memset(buffer, 0, 8);
+	memset(buffer, 0, 1024);
 
 	if (st_shndx == SHN_UNDEF)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
@@ -210,22 +210,16 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 			if (read(fd, buffer + pos, 1) != 1)
 				return (1);
 		} while (buffer[pos] && (pos < 1024));
-		if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
-		{
-			if (!strcmp(buffer, ".bss"))
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
-			else if (!strcmp(buffer, ".rodata"))
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-			else /* (!strcmp(buffer, ".data")) */
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
-		}
+		if (!strcmp(buffer, ".bss"))
+			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
+		else if (!strcmp(buffer, ".rodata"))
+			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
+		else if (!strcmp(buffer, ".data"))
+			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
+		else if (!strcmp(buffer, ".text"))
+			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
 		else
-		{
-			if (!strcmp(buffer, ".text"))
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
-			else
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
-		}
+			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
 	}
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_COMMON)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'c' : 'C';
