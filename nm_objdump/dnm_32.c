@@ -167,10 +167,9 @@ int p_name(int fd, data32_t *d, Elf32_Sym *sym)
 int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 {
 	char c = 0, n = 0, buffer[1024];
-	uint32_t st_name = 0, sh_strtab_off = 0, strtab_off = 0;
+	uint32_t st_name = 0, sh_strtab_off = 0, strtab_off = 0, pos = -1;;
 	Elf32_Shdr sh_strtab;
 
-	uint8_t pos = -1;
 	uint16_t st_shndx = 0;
 	uint32_t offset = 0, sh_name = 0, sto = 0;
 	Elf32_Shdr sobj, strtab;
