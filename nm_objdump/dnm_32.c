@@ -62,7 +62,7 @@ int p_address(data32_t *d, Elf32_Sym *sym)
  */
 int p_type(int fd, data32_t *d, Elf32_Sym *sym)
 {
-	char c = 0, buffer[8];
+	char c = 0, buffer[1024];
 	uint8_t pos = -1;
 	uint16_t st_shndx = 0;
 	uint32_t offset = 0, sh_name = 0, sto = 0;
@@ -166,7 +166,7 @@ int p_name(int fd, data32_t *d, Elf32_Sym *sym)
  */
 int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 {
-	char c = 0, n = 0, buffer[8];
+	char c = 0, n = 0, buffer[1024];
 	uint32_t st_name = 0, sh_strtab_off = 0, strtab_off = 0;
 	Elf32_Shdr sh_strtab;
 
@@ -210,7 +210,7 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 			pos++;
 			if (read(fd, buffer + pos, 1) != 1)
 				return (1);
-		} while (buffer[pos] && (pos < 8));
+		} while (buffer[pos] && (pos < 1024));
 		if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
 		{
 			if (!strcmp(buffer, ".bss"))
