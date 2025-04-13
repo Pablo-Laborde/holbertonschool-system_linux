@@ -32,7 +32,9 @@ typedef struct data32_s
 	uint16_t	e_shnum;
 	uint32_t	e_shoff,
 				e_shstrndx,
-				sh_link;
+				sh_link,
+				seen_arr[1024],
+				seen_count;
 } data32_t;
 
 

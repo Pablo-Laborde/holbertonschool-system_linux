@@ -23,13 +23,8 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 		pos += sizeof(Elf32_Sym);
 		if (!sym.st_value && !sym.st_name)
 			continue;
-		if (p_address(d, &sym))
-			return (1);
-		if (p_type(fd, d, &sym))
-			return (1);
-		putchar(' ');
-		if (p_name(fd, d, &sym))
-			return (1);
+		if (p_address(d, &sym) || p_type(fd, d, &sym) || p_name(fd, d, &sym))
+			continue;
 	}
 	return (0);
 }
@@ -44,16 +39,20 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 int p_address(data32_t *d, Elf32_Sym *sym)
 {
 	uint16_t st_shndx = 0;
-	uint32_t st_value = 0;
+	uint32_t st_value = 0, i = 0;
 
 	st_value = (d->endianness) ? bswap_32(sym->st_value) : sym->st_value;
 	st_shndx = (d->endianness) ? bswap_16(sym->st_shndx) : sym->st_shndx;
+	for (; i < d->seen_count; i++)
+		if (st_value == d->seen_arr[i])
+			return (1);
+	d->seen_arr[i] = st_value;
+	d->seen_count++;
 	if (st_shndx == SHN_UNDEF)
 		printf("        ");
 	else
-		printf("%08x", st_value);
+		printf("%08x ", st_value);
 	fflush(NULL);
-	putchar(' ');
 	return (0);
 }
 
@@ -125,7 +124,8 @@ int p_type(int fd, data32_t *d, Elf32_Sym *sym)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'c' : 'C';
 	else
 		c = '?';
-	putchar(c);
+	printf("%c ", c);
+	fflush(NULL);
 	return (0);
 }
 
