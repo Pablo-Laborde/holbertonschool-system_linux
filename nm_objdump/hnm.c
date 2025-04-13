@@ -93,7 +93,6 @@ int manage_32(int fd)
 		if (sh_type == SHT_SYMTAB)
 		{
 			sh_offset = (d.endianness) ? bswap_32(sh.sh_offset) : sh.sh_offset;
-			printf("SHT_SYMTAB at %u\n", sh_offset);
 			lseek(fd, sh_offset, SEEK_SET);
 			if (manage_sym32_list(fd, &d, sh_size))
 				return (1);
