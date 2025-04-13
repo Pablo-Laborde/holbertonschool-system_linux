@@ -32,9 +32,7 @@ typedef struct data32_s
 	uint16_t	e_shnum;
 	uint32_t	e_shoff,
 				e_shstrndx,
-				sh_link,
-				seen_arr[1024],
-				seen_count;
+				sh_link;
 } data32_t;
 
 
@@ -52,6 +50,7 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size);
 int p_address(data32_t *d, Elf32_Sym *sym);
 int p_type(int fd, data32_t *d, Elf32_Sym *sym);
 int p_name(int fd, data32_t *d, Elf32_Sym *sym);
+int p_all(int fd, data32_t *d, Elf32_Sym *sym);
 
 /* dnm_64.c */
 
