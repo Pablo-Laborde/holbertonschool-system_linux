@@ -229,21 +229,22 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 
 
 	if (st_shndx == SHN_UNDEF)
-		c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
+	{
+		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'W' : 'w';
+		else
+			c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
+	}
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_FILE)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'F' : 'f';
 	else if (st_shndx == SHN_ABS)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'A' : 'a';
-	/*else if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'w' : 'W';*/
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_FUNC)
 	{
-		if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
-			c = 't';
-		else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
-			c = 'T';
-		else /* if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) */
-			c = 'w';
+		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'W' : 'w';
+		else
+			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'T' : 't';
 	}
 	else if ((ELF32_ST_TYPE(sym->st_info) == STT_OBJECT) ||
 		(ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE))
@@ -267,62 +268,46 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 		if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
 		{
 			if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-				c = 'v';
+				c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'V' : 'v';
 			else if (!strcmp(buffer, ".bss"))
-			{
-				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
-					c = 'b';
-				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
-					c = 'B';
-			}
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
 			else if (!strcmp(buffer, ".rodata"))
-			{
-				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
-					c = 'r';
-				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
-					c = 'R';
-			}
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
 			else /* if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") ||
 					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors")) */
-			{
-				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
-					c = 'd';
-				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
-					c = 'D';
-			}
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 		}
 		else /* if (ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE) */
 		{
 			if (!strcmp(buffer, ".text"))
 			{
-				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
-					c = 't';
-				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
-					c = 'T';
-				else /* if (ELF32_ST_BIND(sym->st_info) == STB_WEAK) */
-					c = 'w';
+				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+					c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'W' : 'w';
+				else
+					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
 			}
 			else if (!strcmp(buffer, ".rodata"))
 			{
-				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
-					c = 'r';
-				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
-					c = 'R';
-				else /* if (ELF32_ST_BIND(sym->st_info) == STB_WEAK) */
-					c = 'v';
+				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+					c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'V' : 'v';
+				else
+					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
 			}
 			else if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") ||
 					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors"))
 			{
-				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
-					c = 'd';
-				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
-					c = 'D';
-				else /* if (ELF32_ST_BIND(sym->st_info) == STB_WEAK) */
-					c = 'v';
+				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+					c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'V' : 'v';
+				else
+					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 			}
 			else
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
+			{
+				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+					c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'W' : 'w';
+				else
+					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
+			}
 		}
 	}
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_COMMON)
