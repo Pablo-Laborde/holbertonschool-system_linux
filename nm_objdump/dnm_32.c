@@ -309,7 +309,7 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 			}
 			else if (!strcmp(buffer, ".bss"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
-			else if (!strcmp(buffer, ".rodata"))
+			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
 			else /* if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") ||
 					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors")) */
@@ -331,7 +331,7 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 				else
 					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
 			}
-			else if (!strcmp(buffer, ".rodata"))
+			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp"))
 			{
 				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
 				{
@@ -418,7 +418,7 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 		printf("         %c %s\n", c, name_buf);
 	else
 		printf("%08x %c %s\n", st_value, c, name_buf);
-	if (!strcmp("_START_", name_buf))
-		printf("-------------------  %s  -------------------\n", buffer);
+	/* if (!strcmp("_START_", name_buf))
+		printf("-------------------  %s  -------------------\n", buffer); */
 	return (0);
 }
