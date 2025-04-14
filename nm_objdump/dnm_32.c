@@ -166,8 +166,8 @@ int p_name(int fd, data32_t *d, Elf32_Sym *sym)
  */
 int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 {
-	char c = 0, n = 0, buffer[1024];
-	uint32_t st_name = 0, sh_strtab_off = 0, strtab_off = 0, pos = -1;;
+	char c = 0, buffer[1024], name_buf[1024];
+	uint32_t st_name = 0, sh_strtab_off = 0, strtab_off = 0, pos = -1, n = -1;
 	Elf32_Shdr sh_strtab;
 
 	uint16_t st_shndx = 0;
@@ -180,6 +180,7 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	st_shndx = (d->endianness) ? bswap_16(sym->st_shndx) : sym->st_shndx;
 
 	memset(buffer, 0, 1024);
+	memset(name_buf, 0, 1024);
 /*
 	if (st_shndx == SHN_UNDEF)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
@@ -407,19 +408,17 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	strtab_off = (d->endianness) ? bswap_32(sh_strtab.sh_offset)
 		: sh_strtab.sh_offset;
 	lseek(fd, (strtab_off + st_name), SEEK_SET);
-
+	do {
+		n++;
+		if (read(fd, name_buf + n, 1) != 1)
+			return (1);
+	} while (name_buf[n]);
 
 	if (st_shndx == SHN_UNDEF)
-		printf("         %c ", c);
+		printf("         %c %s\n", c, name_buf);
 	else
-		printf("%08x %c ", st_value, c);
-	fflush(NULL);
-	do {
-		if (read(fd, &n, 1) != 1)
-			return (1);
-		if (n)
-			putchar(n);
-	} while (n);
-	printf(" %s\n", buffer);
+		printf("%08x %c %s\n", st_value, c, name_buf);
+	if (!strcmp("_START_", name_buf))
+		printf("-------------------  %s  -------------------\n", buffer);
 	return (0);
 }
