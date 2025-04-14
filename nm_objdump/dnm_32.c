@@ -231,18 +231,44 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	if (st_shndx == SHN_UNDEF)
 	{
 		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'W' : 'w';
+		{
+			if ((sym->st_other == STV_DEFAULT) ||
+				(sym->st_other == STV_PROTECTED))
+				c = 'W';
+			else /* if ((sym->st_other == STV_HIDDEN) ||
+			(sym->st_other == STV_INTERNAL)) */
+				c = 'w';
+		}
 		else
-			c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
+			c = 'U';
 	}
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_FILE)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'F' : 'f';
 	else if (st_shndx == SHN_ABS)
-		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'A' : 'a';
+	{
+		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+		{
+			if ((sym->st_other == STV_DEFAULT) ||
+				(sym->st_other == STV_PROTECTED))
+				c = 'A';
+			else /* if ((sym->st_other == STV_HIDDEN) ||
+			(sym->st_other == STV_INTERNAL)) */
+				c = 'a';
+		}
+		else
+			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'A' : 'a';
+	}
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_FUNC)
 	{
 		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'W' : 'w';
+		{
+			if ((sym->st_other == STV_DEFAULT) ||
+				(sym->st_other == STV_PROTECTED))
+				c = 'W';
+			else /* if ((sym->st_other == STV_HIDDEN) ||
+			(sym->st_other == STV_INTERNAL)) */
+				c = 'w';
+		}
 		else
 			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'T' : 't';
 	}
@@ -268,7 +294,14 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 		if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
 		{
 			if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-				c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'V' : 'v';
+			{
+				if ((sym->st_other == STV_DEFAULT) ||
+					(sym->st_other == STV_PROTECTED))
+					c = 'V';
+				else /* if ((sym->st_other == STV_HIDDEN) ||
+				(sym->st_other == STV_INTERNAL)) */
+					c = 'v';
+			}
 			else if (!strcmp(buffer, ".bss"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
 			else if (!strcmp(buffer, ".rodata"))
@@ -282,14 +315,28 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 			if (!strcmp(buffer, ".text"))
 			{
 				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-					c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'W' : 'w';
+				{
+					if ((sym->st_other == STV_DEFAULT) ||
+						(sym->st_other == STV_PROTECTED))
+						c = 'W';
+					else /* if ((sym->st_other == STV_HIDDEN) ||
+					(sym->st_other == STV_INTERNAL)) */
+						c = 'w';
+				}
 				else
 					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
 			}
 			else if (!strcmp(buffer, ".rodata"))
 			{
 				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-					c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'V' : 'v';
+				{
+					if ((sym->st_other == STV_DEFAULT) ||
+						(sym->st_other == STV_PROTECTED))
+						c = 'V';
+					else /* if ((sym->st_other == STV_HIDDEN) ||
+					(sym->st_other == STV_INTERNAL)) */
+						c = 'v';
+				}
 				else
 					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
 			}
@@ -297,21 +344,47 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors"))
 			{
 				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-					c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'V' : 'v';
+				{
+					if ((sym->st_other == STV_DEFAULT) ||
+						(sym->st_other == STV_PROTECTED))
+						c = 'V';
+					else /* if ((sym->st_other == STV_HIDDEN) ||
+					(sym->st_other == STV_INTERNAL)) */
+						c = 'v';
+				}
 				else
 					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 			}
 			else
 			{
 				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-					c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'W' : 'w';
+				{
+					if ((sym->st_other == STV_DEFAULT) ||
+						(sym->st_other == STV_PROTECTED))
+						c = 'W';
+					else /* if ((sym->st_other == STV_HIDDEN) ||
+					(sym->st_other == STV_INTERNAL)) */
+						c = 'w';
+				}
 				else
 					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
 			}
 		}
 	}
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_COMMON)
-		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'C' : 'c';
+	{
+		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+		{
+			if ((sym->st_other == STV_DEFAULT) ||
+				(sym->st_other == STV_PROTECTED))
+				c = 'C';
+			else /* if ((sym->st_other == STV_HIDDEN) ||
+			(sym->st_other == STV_INTERNAL)) */
+				c = 'c';
+		}
+		else
+			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'C' : 'c';
+	}
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_SECTION)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'S' : 's';
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_LOPROC ||
