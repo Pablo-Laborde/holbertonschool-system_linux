@@ -21,7 +21,7 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 		if (read(fd, &sym, sizeof(Elf32_Sym)) != sizeof(Elf32_Sym))
 			return (1);
 		pos += sizeof(Elf32_Sym);
-		if (!sym.st_value /*|| !sym.st_name*/)
+		if (!sym.st_value || !sym.st_name)
 			continue;
 		/*if (p_address(d, &sym) || p_type(fd, d, &sym) || p_name(fd, d, &sym))*/
 		if (p_all(fd, d, &sym))
