@@ -214,7 +214,7 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
 		else if (!strcmp(buffer, ".rodata"))
 			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-		else if (!strcmp(buffer, ".data"))
+		else if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr"))
 			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 		else if (!strcmp(buffer, ".text"))
 			c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
