@@ -180,7 +180,7 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	st_shndx = (d->endianness) ? bswap_16(sym->st_shndx) : sym->st_shndx;
 
 	memset(buffer, 0, 1024);
-
+/*
 	if (st_shndx == SHN_UNDEF)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_FILE)
@@ -225,7 +225,117 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_COMMON)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'c' : 'C';
 	else
+		return (1);*/
+
+
+	if (st_shndx == SHN_UNDEF)
+		c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
+	else if (ELF32_ST_TYPE(sym->st_info) == STT_FILE)
+		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'F' : 'f';
+	else if (st_shndx == SHN_ABS)
+		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'A' : 'a';
+	/*else if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+		c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'w' : 'W';*/
+	else if (ELF32_ST_TYPE(sym->st_info) == STT_FUNC)
+	{
+		if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
+			c = 't';
+		else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
+			c = 'T';
+		else /* if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) */
+			c = 'w';
+	}
+	else if ((ELF32_ST_TYPE(sym->st_info) == STT_OBJECT) ||
+		(ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE))
+	{
+		offset = d->e_shoff + st_shndx * sizeof(Elf32_Shdr);
+		lseek(fd, offset, SEEK_SET);
+		if (read(fd, &sobj, sizeof(Elf32_Shdr)) != sizeof(Elf32_Shdr))
+			return (1);
+		offset = d->e_shoff + d->e_shstrndx * sizeof(Elf32_Shdr);
+		lseek(fd, offset, SEEK_SET);
+		if (read(fd, &strtab, sizeof(Elf32_Shdr)) != sizeof(Elf32_Shdr))
+			return (1);
+		sto = (d->endianness) ? bswap_32(strtab.sh_offset) : strtab.sh_offset;
+		sh_name = (d->endianness) ? bswap_32(sobj.sh_name) : sobj.sh_name;
+		lseek(fd, sto + sh_name, SEEK_SET);
+		do {
+			pos++;
+			if (read(fd, buffer + pos, 1) != 1)
+				return (1);
+		} while (buffer[pos] && (pos < 1024));
+		if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
+		{
+			if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
+				c = 'v';
+			else if (!strcmp(buffer, ".bss"))
+			{
+				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
+					c = 'b';
+				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
+					c = 'B';
+			}
+			else if (!strcmp(buffer, ".rodata"))
+			{
+				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
+					c = 'r';
+				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
+					c = 'R';
+			}
+			else /* if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") ||
+					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors")) */
+			{
+				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
+					c = 'd';
+				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
+					c = 'D';
+			}
+		}
+		else /* if (ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE) */
+		{
+			if (!strcmp(buffer, ".text"))
+			{
+				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
+					c = 't';
+				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
+					c = 'T';
+				else /* if (ELF32_ST_BIND(sym->st_info) == STB_WEAK) */
+					c = 'w';
+			}
+			else if (!strcmp(buffer, ".rodata"))
+			{
+				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
+					c = 'r';
+				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
+					c = 'R';
+				else /* if (ELF32_ST_BIND(sym->st_info) == STB_WEAK) */
+					c = 'v';
+			}
+			else if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") ||
+					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors"))
+			{
+				if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
+					c = 'd';
+				else if (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL)
+					c = 'D';
+				else /* if (ELF32_ST_BIND(sym->st_info) == STB_WEAK) */
+					c = 'v';
+			}
+			else
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
+		}
+	}
+	else if (ELF32_ST_TYPE(sym->st_info) == STT_COMMON)
+		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'C' : 'c';
+	else if (ELF32_ST_TYPE(sym->st_info) == STT_SECTION)
+		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'S' : 's';
+	else if (ELF32_ST_TYPE(sym->st_info) == STT_LOPROC ||
+			ELF32_ST_TYPE(sym->st_info) == STT_HIPROC)
+		c = 'p';
+	else
 		return (1);
+
+
 
 	st_name = (d->endianness) ? bswap_32(sym->st_name) : sym->st_name;
 	sh_strtab_off = d->e_shoff + (d->sh_link * sizeof(Elf32_Shdr));
