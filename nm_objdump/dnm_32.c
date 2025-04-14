@@ -309,15 +309,17 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 			}
 			else if (!strcmp(buffer, ".bss"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
-			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp"))
+			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp")
+				|| !strcmp(buffer, ".init") || !strcmp(buffer, ".fini"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-			else /* if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") ||
-					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors")) */
+			else /* (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") ||
+					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") ||
+					!strcmp(buffer, ".got")) */
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 		}
 		else /* if (ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE) */
 		{
-			if (!strcmp(buffer, ".text"))
+			if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt"))
 			{
 				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
 				{
@@ -331,7 +333,8 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 				else
 					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
 			}
-			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp"))
+			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp")
+				|| !strcmp(buffer, ".init") || !strcmp(buffer, ".fini"))
 			{
 				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
 				{
@@ -346,7 +349,8 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
 			}
 			else if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") ||
-					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors"))
+					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") ||
+					!strcmp(buffer, ".got"))
 			{
 				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
 				{
