@@ -420,6 +420,6 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 		if (n)
 			putchar(n);
 	} while (n);
-	printf("\n");
+	printf(" %s\n", buffer);
 	return (0);
 }
