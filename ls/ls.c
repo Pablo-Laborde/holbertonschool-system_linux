@@ -21,12 +21,21 @@ int main(int ac, char **av)
 			ap |= 1;
 		for (i = 1; i < ac; i++)
 		{
-			if (!lstat(av[i], &ss) && (S_ISDIR(ss.st_mode) & 1))
+			if (!lstat(av[i], &ss) && S_ISDIR(ss.st_mode))
 			{
-				(ap & 2) ? printf("\n") : (ap |= 2);
-				if (ap & 1)
-					printf("%s:\n", av[i]);
-				print_dir(flags, av[i]);
+				if (errno == EACCES)
+				{
+					fprintf(stderr,
+					"%s: cannot open directory %s: Permission denied\n",
+					av[0], av[i]);
+				}
+				else
+				{
+					(ap & 2) ? printf("\n") : (ap |= 2);
+					if (ap & 1)
+						printf("%s:\n", av[i]);
+					print_dir(flags, av[i]);
+				}
 			}
 		}
 	}

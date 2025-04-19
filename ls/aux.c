@@ -65,8 +65,8 @@ int manage_files(int ac, char **av, int flags)
 		if ((lstat(av[i], &ss) == -1) && ((av[i][0] != '-') || !av[i][1]))
 		{
 			fprintf(stderr,
-				"%s: cannot access %s: No such file or directory\n",
-				av[0], av[i]);
+			"%s: cannot access %s: No such file or directory\n",
+			av[0], av[i]);
 			printed |= 1;
 		}
 	for (i = 1; i < ac; i++)
