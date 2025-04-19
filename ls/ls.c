@@ -23,7 +23,7 @@ int main(int ac, char **av)
 		{
 			if (!lstat(av[i], &ss) && S_ISDIR(ss.st_mode))
 			{
-				if (errno == EACCES)
+				if (!(ss.st_mode & S_IRUSR) && !(ss.st_mode & S_IXUSR))
 				{
 					fprintf(stderr,
 					"%s: cannot open directory %s: Permission denied\n",
