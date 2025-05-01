@@ -20,6 +20,7 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 	{
 		if (filename && a)
 		{
+			printf("%d-%d\n", filename, a);
 			a--;
 			continue;
 		}
