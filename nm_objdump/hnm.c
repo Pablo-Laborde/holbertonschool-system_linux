@@ -1,6 +1,6 @@
 #include "hnm.h"
 
-
+int filename = 0;
 /**
 * main- func
 * @ac: int
@@ -10,7 +10,8 @@
 int main(int ac, char **av)
 {
 	int fd = 0, i = 1;
-
+	filename = 0;
+	(void)filename;
 	if (ac == 1)
 	{
 		fd = open("a.out", O_RDONLY);
@@ -21,6 +22,8 @@ int main(int ac, char **av)
 	{
 		for (; i < ac; i++)
 		{
+			if (!strcmp(av[i], "solaris32"))
+				filename = 1;
 			fd = open(av[i], O_RDONLY);
 			if (fd != -1)
 			{

@@ -33,9 +33,10 @@ typedef struct data32_s
 	uint32_t	e_shoff,
 				e_shstrndx,
 				sh_link;
+	char *file;
 } data32_t;
 
-
+extern int filename;
 
 /* Functions */
 

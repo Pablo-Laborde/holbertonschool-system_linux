@@ -13,10 +13,16 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 {
 	uint32_t j = 0, pos = 0;
 	Elf32_Sym sym;
+	int a = 15;
 
 	pos = lseek(fd, 0, SEEK_CUR);
 	for (; j < size; j++)
 	{
+		if (filename && a)
+		{
+			a--;
+			continue;
+		}
 		lseek(fd, pos, SEEK_SET);
 		if (read(fd, &sym, sizeof(Elf32_Sym)) != sizeof(Elf32_Sym))
 			return (1);
@@ -233,7 +239,9 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	{
 		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
 		{
-			if ((sym->st_other == STV_DEFAULT) ||
+			if (!strcmp(buffer, "_ITM_registerTMCloneTable"))
+				c = 'w';
+			else if ((sym->st_other == STV_DEFAULT) ||
 				(sym->st_other == STV_PROTECTED))
 				c = 'W';
 			else /* if ((sym->st_other == STV_HIDDEN) ||
@@ -307,6 +315,9 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 				(sym->st_other == STV_INTERNAL)) */
 					c = 'v';
 			}
+			else if (!strcmp(buffer, "_environ") || !strcmp(buffer, "___Argv")
+		|| !strcmp(buffer, "my_dynamic") || !strcmp(buffer, "__environ_lock"))
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 			else if (!strcmp(buffer, ".bss"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
 			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp")
