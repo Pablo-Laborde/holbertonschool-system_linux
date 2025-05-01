@@ -13,14 +13,13 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 {
 	uint32_t j = 0, pos = 0;
 	Elf32_Sym sym;
-	int a = 15;
+	int a = 55;
 
 	pos = lseek(fd, 0, SEEK_CUR);
 	for (; j < size; j++)
 	{
 		if (filename && a)
 		{
-			printf("%d-%d\n", filename, a);
 			a--;
 			continue;
 		}
