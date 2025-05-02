@@ -239,13 +239,13 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	{
 		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
 		{
-			if (!strcmp(buffer, "_ITM_registerTMCloneTable"))
-				c = 'w';
-			else if ((sym->st_other == STV_DEFAULT) ||
+			/*
+			if ((sym->st_other == STV_DEFAULT) ||
 				(sym->st_other == STV_PROTECTED))
 				c = 'W';
-			else /* if ((sym->st_other == STV_HIDDEN) ||
-			(sym->st_other == STV_INTERNAL)) */
+			else if ((sym->st_other == STV_HIDDEN) ||
+			(sym->st_other == STV_INTERNAL))
+			*/
 				c = 'w';
 		}
 		else
@@ -315,9 +315,10 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 				(sym->st_other == STV_INTERNAL)) */
 					c = 'v';
 			}
+			/*
 			else if (!strcmp(buffer, "_environ") || !strcmp(buffer, "___Argv")
 		|| !strcmp(buffer, "my_dynamic") || !strcmp(buffer, "__environ_lock"))
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';*/
 			else if (!strcmp(buffer, ".bss"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
 			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp")
