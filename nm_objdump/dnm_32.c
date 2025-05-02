@@ -234,7 +234,6 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	else
 		return (1);*/
 
-
 	if (st_shndx == SHN_UNDEF)
 	{
 		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
@@ -304,6 +303,8 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 			if (read(fd, buffer + pos, 1) != 1)
 				return (1);
 		} while (buffer[pos] && (pos < 1024));
+		if (!strcmp(buffer, "_PROCEDURE_LINKAGE_TABLE"))
+			printf("value: %d / info: %d\n", sym->st_value, sym->st_info);
 		if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
 		{
 			if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
@@ -315,10 +316,6 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 				(sym->st_other == STV_INTERNAL)) */
 					c = 'v';
 			}
-			/*
-			else if (!strcmp(buffer, "_environ") || !strcmp(buffer, "___Argv")
-		|| !strcmp(buffer, "my_dynamic") || !strcmp(buffer, "__environ_lock"))
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';*/
 			else if (!strcmp(buffer, ".bss"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
 			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp")
