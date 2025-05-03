@@ -13,7 +13,7 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 {
 	uint32_t j = 0, pos = 0;
 	Elf32_Sym sym;
-	int a = 150;
+	/*int a = 150;*/
 
 	pos = lseek(fd, 0, SEEK_CUR);
 	for (; j < size; j++)
