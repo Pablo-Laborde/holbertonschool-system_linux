@@ -101,10 +101,7 @@ int manage_32(int fd)
 		sh_size = ((d.endianness) ? bswap_32(sh.sh_size) : sh.sh_size) /
 			sizeof(Elf32_Sym);
 		if (!sh_size && filename)
-		{
-			printf("no sh\n");
 			continue;
-		}
 		sh_type = (d.endianness) ? bswap_32(sh.sh_type) : sh.sh_type;
 		d.sh_link = (d.endianness) ? bswap_32(sh.sh_link) : sh.sh_link;
 		if (sh_type == SHT_SYMTAB)
