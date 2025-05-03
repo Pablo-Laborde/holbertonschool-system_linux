@@ -31,7 +31,11 @@ int main(int ac, char **av)
 			{
 				rv = elf_handler(fd);
 				if (rv == 16)
+				{
 					fprintf(stderr, "%s: %s: no symbols\n", av[0], av[i]);
+					printf("%d - nosym\n", rv);
+					fflush(NULL);
+				}
 				close(fd);
 			}
 		}
