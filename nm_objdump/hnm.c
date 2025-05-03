@@ -33,8 +33,7 @@ int main(int ac, char **av)
 				if (rv == 16)
 				{
 					fprintf(stderr, "%s: %s: no symbols\n", av[0], av[i]);
-					printf("%d - nosym\n", rv);
-					fflush(NULL);
+					printf("%s: %s: no symbols\n", av[0], av[i]);
 				}
 				close(fd);
 			}
@@ -61,6 +60,8 @@ int elf_handler(int fd)
 		return (1);
 	if (head[4] == ELFCLASS32)
 		rv = manage_32(fd);
+	if ((rv == 16) && filename)
+		printf("%d - nosym\n", rv);
 	return (rv);
 }
 
