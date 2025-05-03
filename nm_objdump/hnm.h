@@ -42,7 +42,7 @@ extern int filename;
 
 /* hnm.c */
 int main(int ac, char **av);
-void elf_handler(int fd);
+int elf_handler(int fd);
 int manage_32(int fd);
 int manage_64(int fd);
 

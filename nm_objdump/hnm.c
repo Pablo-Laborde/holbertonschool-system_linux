@@ -9,13 +9,15 @@ int filename = 0;
 */
 int main(int ac, char **av)
 {
-	int fd = 0, i = 1;
+	int fd = 0, i = 1, rv = 0;
 	filename = 0;
 	(void)filename;
 	if (ac == 1)
 	{
 		fd = open("a.out", O_RDONLY);
-		elf_handler(fd);
+		rv = elf_handler(fd);
+		if (rv == 16)
+			fprintf(stderr, "%s: %s: no symbols", av[0], av[1]);
 		close(fd);
 	}
 	else
@@ -27,7 +29,9 @@ int main(int ac, char **av)
 			fd = open(av[i], O_RDONLY);
 			if (fd != -1)
 			{
-				elf_handler(fd);
+				rv = elf_handler(fd);
+				if (rv == 16)
+					fprintf(stderr, "%s: %s: no symbols", av[0], av[i]);
 				close(fd);
 			}
 		}
@@ -39,19 +43,21 @@ int main(int ac, char **av)
 /**
 * elf_handler- func
 * @fd: int
-* Return: void
+* Return: int
 */
-void elf_handler(int fd)
+int elf_handler(int fd)
 {
 	char head[16];
+	int rv = 0;
 
 	if (read(fd, head, (sizeof(char) * 16)) != 16)
-		return;
+		return (1);
 	if ((head[0] != 0x7F) || (head[1] != 'E') ||
 		(head[2] != 'L') || (head[3] != 'F'))
-		return;
+		return (1);
 	if (head[4] == ELFCLASS32)
-		manage_32(fd);
+		rv = manage_32(fd);
+	return (rv);
 }
 
 
@@ -65,7 +71,7 @@ int manage_32(int fd)
 	data32_t d;
 	Elf32_Ehdr	h;
 	Elf32_Shdr	sh;
-	uint16_t	i = 0;
+	uint16_t	i = 0, symflag = 16;
 	uint32_t	shdr_pos = 0, sh_type = 0, sh_offset = 0, sh_size = 0;
 
 	lseek(fd, 0, SEEK_SET);
@@ -100,8 +106,10 @@ int manage_32(int fd)
 			if (manage_sym32_list(fd, &d, sh_size))
 				return (1);
 		}
+		if (sh_size != 0)
+			symflag = 0;
 	}
-	return (0);
+	return (symflag);
 }
 
 
