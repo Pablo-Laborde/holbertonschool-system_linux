@@ -319,7 +319,8 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp")
 				|| !strcmp(buffer, ".init") || !strcmp(buffer, ".fini"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-			else if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt"))
+			else if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt")
+				|| !strcmp(buffer, ".text.startup"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
 			else /* (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") ||
 					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") ||
@@ -426,12 +427,12 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 		if (read(fd, name_buf + n, 1) != 1)
 			return (1);
 	} while (name_buf[n]);
-
+/*
 	if (filename && !strcmp(name_buf, "_etext"))
 	{
 		printf("value: %d / info: %d\n", sym->st_value, sym->st_info);
 		printf("%s\n", buffer);
-	}
+	}*/
 	if (st_shndx == SHN_UNDEF)
 		printf("         %c %s\n", c, name_buf);
 	else
