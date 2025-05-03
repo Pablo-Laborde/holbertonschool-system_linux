@@ -60,6 +60,8 @@ int elf_handler(int fd)
 		return (1);
 	if (head[4] == ELFCLASS32)
 		rv = manage_32(fd);
+	if (filename)
+		printf("%d - nosym\n", rv);
 	return (rv);
 }
 
@@ -100,8 +102,9 @@ int manage_32(int fd)
 		shdr_pos += sizeof(Elf32_Shdr);
 		sh_size = ((d.endianness) ? bswap_32(sh.sh_size) : sh.sh_size) /
 			sizeof(Elf32_Sym);
-		if (!sh_size && filename)
+		if (!sh_size)
 			continue;
+		symflag = 0;
 		sh_type = (d.endianness) ? bswap_32(sh.sh_type) : sh.sh_type;
 		d.sh_link = (d.endianness) ? bswap_32(sh.sh_link) : sh.sh_link;
 		if (sh_type == SHT_SYMTAB)
@@ -111,8 +114,6 @@ int manage_32(int fd)
 			if (manage_sym32_list(fd, &d, sh_size))
 				return (1);
 		}
-		if (sh_size != 0)
-			symflag = 0;
 	}
 	return (symflag);
 }
