@@ -24,7 +24,7 @@ int main(int ac, char **av)
 	{
 		for (; i < ac; i++)
 		{
-			if (!strcmp(av[i], "solaris32"))
+			if (!strcmp(av[i], "sparcbigendian32"))
 				filename = 1;
 			fd = open(av[i], O_RDONLY);
 			if (fd != -1)
@@ -100,7 +100,7 @@ int manage_32(int fd)
 		shdr_pos += sizeof(Elf32_Shdr);
 		sh_size = ((d.endianness) ? bswap_32(sh.sh_size) : sh.sh_size) /
 			sizeof(Elf32_Sym);
-		if (!sh_size)
+		if (!sh_size && filename)
 		{
 			printf("no sh\n");
 			continue;
