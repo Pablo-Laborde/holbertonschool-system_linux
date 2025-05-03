@@ -319,6 +319,8 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp")
 				|| !strcmp(buffer, ".init") || !strcmp(buffer, ".fini"))
 				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
+			else if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt"))
+				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
 			else /* (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") ||
 					!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") ||
 					!strcmp(buffer, ".got")) */
