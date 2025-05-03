@@ -25,12 +25,12 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 		if (/* !sym.st_value ||*/ !sym.st_name)
 			continue;
 		/*if (p_address(d, &sym) || p_type(fd, d, &sym) || p_name(fd, d, &sym))*/
-		if (filename && a)
+		/*if (filename && a)
 		{
 			a--;
 			continue;
-		}
-		else if (p_all(fd, d, &sym))
+		}*/
+		if (p_all(fd, d, &sym))
 			continue;
 	}
 	return (0);
