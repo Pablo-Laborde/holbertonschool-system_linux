@@ -60,7 +60,7 @@ int elf_handler(int fd)
 		return (1);
 	if (head[4] == ELFCLASS32)
 		rv = manage_32(fd);
-	if ((rv == 16) && filename)
+	if (filename)
 		printf("%d - nosym\n", rv);
 	return (rv);
 }
