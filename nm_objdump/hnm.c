@@ -31,7 +31,10 @@ int main(int ac, char **av)
 			{
 				rv = elf_handler(fd);
 				if (rv == 16)
+				{
 					fprintf(stderr, "%s: %s: no symbols", av[0], av[i]);
+					printf("%s: %s: no symbols", av[0], av[i]);
+				}
 				close(fd);
 			}
 		}
