@@ -428,7 +428,10 @@ int p_all(int fd, data32_t *d, Elf32_Sym *sym)
 	} while (name_buf[n]);
 
 	if (filename && !strcmp(name_buf, "_etext"))
-		printf("value: %d / info: %d / buffer: %s\n", sym->st_value, sym->st_info, buffer);
+	{
+		printf("value: %d / info: %d\n", sym->st_value, sym->st_info);
+		printf("%c%c%c\n", buffer[0], buffer[1], buffer[2]);
+	}
 	if (st_shndx == SHN_UNDEF)
 		printf("         %c %s\n", c, name_buf);
 	else
