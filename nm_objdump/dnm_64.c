@@ -231,8 +231,8 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 			return (1);
 	} while (name_buf[n]);
 	if (st_shndx == SHN_UNDEF)
-		printf("         %c %s\n", c, name_buf);
+		printf("                 %c %s\n", c, name_buf);
 	else
-		printf("%16lx %c %s\n", st_value, c, name_buf);
+		printf("%016lx %c %s\n", st_value, c, name_buf);
 	return (0);
 }
