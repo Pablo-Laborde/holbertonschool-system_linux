@@ -1,6 +1,5 @@
 #include "hnm.h"
 
-
 int filename = 0;
 /**
 * main- func

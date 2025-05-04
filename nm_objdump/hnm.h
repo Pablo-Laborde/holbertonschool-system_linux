@@ -56,20 +56,10 @@ typedef struct data32_s
  */
 typedef struct m32_s
 {
-	char		c,
-				buf[1024],
-				name_buf[1024];
-	uint16_t	st_shndx;
-	uint32_t	st_value,
-				st_name,
-				sh_strtab_off,
-				strtab_off,
-				sh_name,
-				offset,
-				sto;
-	Elf32_Shdr	sh_strtab,
-				sobj,
-				strtab;
+	
+	
+	uint32_t	
+	
 } m32_t;
 
 extern int filename;
@@ -84,14 +74,7 @@ int elf_handler(int fd);
 /* dnm_32.c */
 int manage_32(int fd);
 int manage_sym32_list(int fd, data32_t *d, uint32_t size);
-
-
-/* f32_1.c */
-int m32_p1(int fd, data32_t *d, Elf32_Sym *sym);
-int m32_p2(int fd, data32_t *d, Elf32_Sym *sym, m32_t *m);
-int m32_p3(int fd, data32_t *d, Elf32_Sym *sym, m32_t *m);
-int m32_p4(int fd, data32_t *d, Elf32_Sym *sym, m32_t *m);
-int m32_p5(int fd, data32_t *d, Elf32_Sym *sym, m32_t *m);
+int m32(int fd, data32_t *d, Elf32_Sym *sym);
 
 
 /* dnm_64.c */
