@@ -74,7 +74,7 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 		pos += sizeof(Elf32_Sym);
 		if (!sym.st_name)
 			continue;
-		m32(fd, d, &sym)
+		m32(fd, d, &sym);
 	}
 	return (0);
 }
