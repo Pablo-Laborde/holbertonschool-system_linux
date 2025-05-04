@@ -25,6 +25,7 @@
  * @e_shnum: uint16_t
  * @e_shstrndx: uint16_t
  * @e_shoff: uint32_t
+ * @sh_link: uint32_t
  */
 typedef struct data32_s
 {
@@ -33,8 +34,43 @@ typedef struct data32_s
 	uint32_t	e_shoff,
 				e_shstrndx,
 				sh_link;
-	char *file;
 } data32_t;
+
+
+/**
+ * struct m32_s - structure
+ * @c: char
+ * @buf: char *
+ * @name_buf: char *
+ * @st_shndx: uint16_t
+ * @st_value: uint32_t
+ * @st_name: uint32_t
+ * @sh_strtab_off: uint32_t
+ * @strtab_off: uint32_t
+ * @sh_name: uint32_t
+ * @offset: uint32_t
+ * @sto: uint32_t
+ * @sh_strtab: Elf32_Shdr
+ * @sobj: Elf32_Shdr
+ * @strtab: Elf32_Shdr
+ */
+typedef struct m32_s
+{
+	char		c,
+				buf[1024],
+				name_buf[1024];
+	uint16_t	st_shndx;
+	uint32_t	st_value,
+				st_name,
+				sh_strtab_off,
+				strtab_off,
+				sh_name,
+				offset,
+				sto;
+	Elf32_Shdr	sh_strtab,
+				sobj,
+				strtab;
+} m32_t;
 
 extern int filename;
 
@@ -43,14 +79,23 @@ extern int filename;
 /* hnm.c */
 int main(int ac, char **av);
 int elf_handler(int fd);
-int manage_32(int fd);
-int manage_64(int fd);
+
 
 /* dnm_32.c */
+int manage_32(int fd);
 int manage_sym32_list(int fd, data32_t *d, uint32_t size);
-int p_all(int fd, data32_t *d, Elf32_Sym *sym);
+
+
+/* f32_1.c */
+int m32_p1(int fd, data32_t *d, Elf32_Sym *sym);
+int m32_p2(int fd, data32_t *d, Elf32_Sym *sym, m32_t *m);
+int m32_p3(int fd, data32_t *d, Elf32_Sym *sym, m32_t *m);
+int m32_p4(int fd, data32_t *d, Elf32_Sym *sym, m32_t *m);
+int m32_p5(int fd, data32_t *d, Elf32_Sym *sym, m32_t *m);
+
 
 /* dnm_64.c */
+int manage_64(int fd);
 
 
 #endif

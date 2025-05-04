@@ -1,7 +1,7 @@
 .PHONY: all clean
 CC = gcc
 CCFLAGS = -g -Wall -Werror -Wextra -pedantic
-NM_SRC = hnm.c dnm_32.c
+NM_SRC = hnm.c dnm_32.c f32_1.c dnm_64.c
 NM_NAME = hnm
 
 
