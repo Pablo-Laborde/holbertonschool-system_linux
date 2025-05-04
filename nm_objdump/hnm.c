@@ -10,6 +10,7 @@ int filename = 0;
 int main(int ac, char **av)
 {
 	int fd = 0, i = 1, rv = 0;
+
 	filename = 0;
 	(void)filename;
 	if (ac == 1)

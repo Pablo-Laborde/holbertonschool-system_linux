@@ -8,11 +8,15 @@
 */
 int manage_32(int fd)
 {
-	data32_t d;
+	data32_t	d;
 	Elf32_Ehdr	h;
 	Elf32_Shdr	sh;
-	uint16_t	i = 0, symflag = 16;
-	uint32_t	shdr_pos = 0, sh_type = 0, sh_offset = 0, sh_size = 0;
+	uint16_t	i = 0,
+				symflag = 16;
+	uint32_t	shdr_pos = 0,
+				sh_type = 0,
+				sh_offset = 0,
+				sh_size = 0;
 
 	lseek(fd, 0, SEEK_SET);
 	if (read(fd, &h, sizeof(Elf32_Ehdr)) != sizeof(Elf32_Ehdr))
