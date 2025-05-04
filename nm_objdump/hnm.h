@@ -37,31 +37,6 @@ typedef struct data32_s
 } data32_t;
 
 
-/**
- * struct m32_s - structure
- * @c: char
- * @buf: char *
- * @name_buf: char *
- * @st_shndx: uint16_t
- * @st_value: uint32_t
- * @st_name: uint32_t
- * @sh_strtab_off: uint32_t
- * @strtab_off: uint32_t
- * @sh_name: uint32_t
- * @offset: uint32_t
- * @sto: uint32_t
- * @sh_strtab: Elf32_Shdr
- * @sobj: Elf32_Shdr
- * @strtab: Elf32_Shdr
- */
-typedef struct m32_s
-{
-	
-	
-	uint32_t	
-	
-} m32_t;
-
 extern int filename;
 
 /* Functions */
