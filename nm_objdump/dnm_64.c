@@ -101,6 +101,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 				n = -1;
 	uint64_t	offset = 0,
 				sh_strtab_off = 0,
+				sh_flags = 0,
 				strtab_off = 0,
 				st_value = 0;
 	Elf64_Shdr sh_strtab, sobj, strtab;
@@ -149,6 +150,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 			return (1);
 		sto = (d->endianness) ? bswap_32(strtab.sh_offset) : strtab.sh_offset;
 		sh_name = (d->endianness) ? bswap_32(sobj.sh_name) : sobj.sh_name;
+		sh_flags = (d->endianness) ? bswap_64(sobj.sh_flags) : sobj.sh_flags;
 		lseek(fd, sto + sh_name, SEEK_SET);
 		do {
 			pos++;
@@ -161,13 +163,13 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 					c = 'V';
 				else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 					c = 'v';
-			} else if (!strcmp(buffer, ".bss"))
+			} else if ((sh_flags & 8/*SHF_NOBITS*/) /*|| !strcmp(buffer, ".bss") */)
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
-			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini"))
-				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-			else if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt") || !strcmp(buffer, ".text.startup"))
+			else if ((sh_flags & SHF_EXECINSTR) || !strcmp(buffer, ".init_array") || !strcmp(buffer, ".fini_array") /*|| !strcmp(buffer, ".text") || !strcmp(buffer, ".plt") || !strcmp(buffer, ".text.startup") */)
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
-			else /* (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got")) */
+			else if (((sh_flags & SHF_ALLOC) && !(sh_flags & SHF_WRITE) /*&& !(sh_flags & SHF_EXECINSTR)*/) /* || !strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini") */)
+				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
+			else /* if ((sh_flags & SHF_WRITE && !(sh_flags & SHF_NOBITS)) || (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got"))) */
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 		} else /* if (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE) */ {
 			if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt")) {
