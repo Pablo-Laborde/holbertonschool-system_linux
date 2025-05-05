@@ -150,13 +150,17 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 		sto = (d->endianness) ? bswap_64(strtab.sh_offset) : strtab.sh_offset;
 		sh_name = (d->endianness) ? bswap_32(sobj.sh_name) : sobj.sh_name;
 		lseek(fd, sto + sh_name, SEEK_SET);
+		if (filename)
+				printf("buffer: ");
 		do {
 			pos++;
 			if (read(fd, buffer + pos, 1) != 1)
 				return (1);
+			if (filename)
+				printf("%02x", buffer[pos]);
 		} while (buffer[pos] && (pos < 1024));
 		if (filename)
-			printf("buffer: %s\n", buffer);
+				printf("\n");
 		if (ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) {
 			if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 				if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
