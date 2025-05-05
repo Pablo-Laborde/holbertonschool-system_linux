@@ -101,7 +101,6 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 				n = -1;
 	uint64_t	offset = 0,
 				sh_strtab_off = 0,
-				sh_flags = 0,
 				strtab_off = 0,
 				st_value = 0;
 	Elf64_Shdr sh_strtab, sobj, strtab;
@@ -150,31 +149,28 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 			return (1);
 		sto = (d->endianness) ? bswap_32(strtab.sh_offset) : strtab.sh_offset;
 		sh_name = (d->endianness) ? bswap_32(sobj.sh_name) : sobj.sh_name;
-		sh_flags = (d->endianness) ? bswap_64(sobj.sh_flags) : sobj.sh_flags;
 		lseek(fd, sto + sh_name, SEEK_SET);
 		do {
 			pos++;
 			if (read(fd, buffer + pos, 1) != 1)
 				return (1);
 		} while (buffer[pos] && (pos < 1024));
-		if (filename)
-			printf("%s - %ld\n", buffer, sobj.sh_flags);
 		if (ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) {
 			if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 				if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 					c = 'V';
 				else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 					c = 'v';
-			} else if ((sh_flags & 8/*SHF_NOBITS*/) /*|| !strcmp(buffer, ".bss") */)
+			} else if (!strcmp(buffer, ".bss"))
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
-			else if ((sh_flags & SHF_EXECINSTR) || !strcmp(buffer, ".init_array") || !strcmp(buffer, ".fini_array") /*|| !strcmp(buffer, ".text") || !strcmp(buffer, ".plt") || !strcmp(buffer, ".text.startup") */)
-				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
-			else if (((sh_flags & SHF_ALLOC) && !(sh_flags & SHF_WRITE) /*&& !(sh_flags & SHF_EXECINSTR)*/) /* || !strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini") */)
+			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini"))
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-			else /* if ((sh_flags & SHF_WRITE && !(sh_flags & SHF_NOBITS)) || (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got"))) */
+			else if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt") || !strcmp(buffer, ".text.startup"))
+				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
+			else /* (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got")) */
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 		} else /* if (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE) */ {
-			if ((sh_flags & SHF_EXECINSTR) || !strcmp(buffer, ".init_array") || !strcmp(buffer, ".fini_array") || !strcmp(buffer, ".text") || !strcmp(buffer, ".plt")) {
+			if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt")) {
 				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 						c = 'W';
@@ -182,7 +178,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 						c = 'w';
 				} else
 					c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
-			} else if (((sh_flags & SHF_ALLOC) && !(sh_flags & SHF_WRITE) /*&& !(sh_flags & SHF_EXECINSTR)*/) /*|| !strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini")*/) {
+			} else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini")) {
 				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 						c = 'V';
@@ -190,7 +186,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 						c = 'v';
 				} else
 					c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-			} else if ((sh_flags & SHF_WRITE) /*|| !strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got")*/) {
+			} else if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got")) {
 				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 						c = 'V';
