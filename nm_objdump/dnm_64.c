@@ -161,7 +161,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 					c = 'V';
 				else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 					c = 'v';
-			} else if (!strcmp(buffer, ".bss") || !strcmp(buffer, ".completed.7585"))
+			} else if (!strcmp(buffer, ".bss") || !strcmp(buffer, "completed.7585"))
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
 			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini"))
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
