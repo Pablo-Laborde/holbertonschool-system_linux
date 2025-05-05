@@ -158,7 +158,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 				return (1);
 		} while (buffer[pos] && (pos < 1024));
 		if (filename)
-			printf("%s\n", buffer);
+			printf("%s - %ld\n", buffer, sobj.sh_flags);
 		if (ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) {
 			if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 				if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
