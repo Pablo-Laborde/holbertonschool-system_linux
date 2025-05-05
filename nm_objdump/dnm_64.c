@@ -172,7 +172,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 			else /* if ((sh_flags & SHF_WRITE && !(sh_flags & SHF_NOBITS)) || (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got"))) */
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 		} else /* if (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE) */ {
-			if (/*(sh_flags & SHF_EXECINSTR) || !strcmp(buffer, ".init_array") || !strcmp(buffer, ".fini_array") ||*/ !strcmp(buffer, ".text") || !strcmp(buffer, ".plt")) {
+			if ((sh_flags & SHF_EXECINSTR) || !strcmp(buffer, ".init_array") || !strcmp(buffer, ".fini_array")/*|| !strcmp(buffer, ".text") || !strcmp(buffer, ".plt")*/) {
 				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 						c = 'W';
@@ -180,9 +180,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 						c = 'w';
 				} else
 					c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
-			} else if ((sh_flags & 8/*SHF_NOBITS*/) /*|| !strcmp(buffer, ".bss") */)
-				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
-			else if (((sh_flags & SHF_ALLOC) && !(sh_flags & SHF_WRITE) /*&& !(sh_flags & SHF_EXECINSTR)*/) /*|| !strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini")*/) {
+			} else if (((sh_flags & SHF_ALLOC) && !(sh_flags & SHF_WRITE) /*&& !(sh_flags & SHF_EXECINSTR)*/) /*|| !strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini")*/) {
 				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 						c = 'V';
