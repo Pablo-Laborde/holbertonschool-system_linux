@@ -172,7 +172,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 			else /* if ((sh_flags & SHF_WRITE && !(sh_flags & SHF_NOBITS)) || (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got"))) */
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 		} else /* if (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE) */ {
-			if ((sh_flags & SHF_EXECINSTR) || !strcmp(buffer, ".init_array") || !strcmp(buffer, ".fini_array")/*|| !strcmp(buffer, ".text") || !strcmp(buffer, ".plt")*/) {
+			if ((sh_flags & SHF_EXECINSTR) || !strcmp(buffer, ".init_array") || !strcmp(buffer, ".fini_array") || !strcmp(buffer, ".text") || !strcmp(buffer, ".plt")) {
 				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 						c = 'W';
