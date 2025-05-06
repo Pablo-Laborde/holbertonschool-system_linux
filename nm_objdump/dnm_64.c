@@ -160,8 +160,10 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 				printf("%02x", buffer[pos]);
 		} while (buffer[pos] && (pos < 1024));
 		if (filename)
-				printf(" - %s\n", buffer);
+				printf(" - %s", buffer);
 		if (ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) {
+			if (filename)
+				printf(" - object\n");
 			if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 				if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 					c = 'V';
@@ -176,6 +178,8 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 			else /* (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got")) */
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
 		} else /* if (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE) */ {
+			if (filename)
+				printf(" - notype\n");
 			if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt")) {
 				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
