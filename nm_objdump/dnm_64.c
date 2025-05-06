@@ -19,7 +19,7 @@ int manage_64(int fd)
 				sh_offset = 0;
 
 	lseek(fd, 0, SEEK_SET);
-	if (read(fd, &h, sizeof(Elf32_Ehdr)) != sizeof(Elf32_Ehdr))
+	if (read(fd, &h, sizeof(Elf64_Ehdr)) != sizeof(Elf64_Ehdr))
 		return (1);
 	d.endianness = h.e_ident[EI_DATA] == ELFDATA2MSB;
 	d.e_shnum = (d.endianness) ? bswap_16(h.e_shnum) : h.e_shnum;
