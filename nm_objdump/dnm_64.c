@@ -156,10 +156,14 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 		lseek(fd, offset, SEEK_SET);
 		if (read(fd, &sobj, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
 			return (1);
+		if (filename)
+			printf("c5\n");
 		offset = d->e_shoff + d->e_shstrndx * sizeof(Elf64_Shdr);
 		lseek(fd, offset, SEEK_SET);
 		if (read(fd, &strtab, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
 			return (1);
+		if (filename)
+			printf("c6\n");
 		sto = (d->endianness) ? bswap_64(strtab.sh_offset) : strtab.sh_offset;
 		sh_name = (d->endianness) ? bswap_32(sobj.sh_name) : sobj.sh_name;
 		lseek(fd, sto + sh_name, SEEK_SET);
