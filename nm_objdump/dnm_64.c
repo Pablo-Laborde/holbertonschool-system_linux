@@ -46,13 +46,15 @@ int manage_64(int fd)
 		d.sh_link = (d.endianness) ? bswap_64(sh.sh_link) : sh.sh_link;
 		if (sh_type == SHT_SYMTAB)
 		{
-			printf("%d: ", i);
+			if (filename)
+				printf("%d: ", i);
 			symflag = 0;
 			sh_offset = (d.endianness) ? bswap_64(sh.sh_offset) : sh.sh_offset;
 			lseek(fd, sh_offset, SEEK_SET);
 			if (manage_sym64_list(fd, &d, sh_size))
 				return (1);
-			printf("\n");
+			if (filename)
+				printf("\n");
 		}
 	}
 	return (symflag);
@@ -80,7 +82,8 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 		pos += sizeof(Elf64_Sym);
 		if (!sym.st_name)
 		{
-			printf("%ld ", j);
+			if (filename)
+				printf("%ld ", j);
 			continue;
 		}
 		m64(fd, d, &sym);
