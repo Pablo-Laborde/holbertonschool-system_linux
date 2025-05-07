@@ -46,8 +46,6 @@ int manage_64(int fd)
 		d.sh_link = (d.endianness) ? bswap_64(sh.sh_link) : sh.sh_link;
 		if (sh_type == SHT_SYMTAB)
 		{
-			if (filename)
-				printf("%d: ", i);
 			symflag = 0;
 			sh_offset = (d.endianness) ? bswap_64(sh.sh_offset) : sh.sh_offset;
 			lseek(fd, sh_offset, SEEK_SET);
@@ -74,8 +72,6 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 	pos = lseek(fd, 0, SEEK_CUR);
 	for (; j < size; j++)
 	{
-		if (filename)
-			printf("%ld ", j);
 		lseek(fd, pos, SEEK_SET);
 		if (read(fd, &sym, sizeof(Elf64_Sym)) != sizeof(Elf64_Sym))
 			return (1);
@@ -88,12 +84,8 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 		}
 		if (!sym.st_name)
 			continue;
-		if (filename  && (j == 37))
-			printf("check\n");
 		m64(fd, d, &sym);
 	}
-	if (filename)
-		printf("\n");
 	return (0);
 }
 
@@ -123,6 +115,11 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 	st_shndx = (d->endianness) ? bswap_16(sym->st_shndx) : sym->st_shndx;
 	memset(buffer, 0, 1024);
 	memset(name_buf, 0, 1024);
+	uint32_t nam = (d->endianness) ? bswap_64(sym->st_name) : sym->st_name;
+	if (filename && (nam == 123))
+	{	
+		printf("%016lx - %d\n", st_value, nam);
+	}
 	if (st_shndx == SHN_UNDEF) {
 		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) /*{
 			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
@@ -235,11 +232,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 	else if (ELF64_ST_TYPE(sym->st_info) == STT_LOPROC || ELF64_ST_TYPE(sym->st_info) == STT_HIPROC)
 		c = 'p';
 	else
-	{
-		if (filename)
-			printf("this case\n");
 		return (1);
-	}
 	if (filename)
 		printf("%c\n", c);
 	st_name = (d->endianness) ? bswap_32(sym->st_name) : sym->st_name;
