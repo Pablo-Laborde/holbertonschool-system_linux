@@ -150,6 +150,8 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 		} else
 			c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'T' : 't';
 	} else if ((ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) || (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE)) {
+		if (filename)
+			printf("c1\n");
 		offset = d->e_shoff + st_shndx * sizeof(Elf64_Shdr);
 		lseek(fd, offset, SEEK_SET);
 		if (read(fd, &sobj, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
