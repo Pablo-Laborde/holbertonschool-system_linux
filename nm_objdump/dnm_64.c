@@ -240,6 +240,8 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 			printf("this case\n");
 		return (1);
 	}
+	if (filename)
+		printf("%c\n", c);
 	st_name = (d->endianness) ? bswap_32(sym->st_name) : sym->st_name;
 	sh_strtab_off = d->e_shoff + (d->sh_link * sizeof(Elf64_Shdr));
 	lseek(fd, sh_strtab_off, SEEK_SET);
