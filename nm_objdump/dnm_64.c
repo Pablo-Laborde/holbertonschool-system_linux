@@ -83,7 +83,8 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 		if (filename  && (j == 37))
 		{
 			uint64_t st_value = (d->endianness) ? bswap_64(sym.st_value) : sym.st_value;
-			printf("%016lx\n", st_value);
+			uint32_t name = (d->endianness) ? bswap_64(sym.st_name) : sym.st_name;
+			printf("%016lx - %d\n", st_value, name);
 		}
 		if (!sym.st_name)
 			continue;
