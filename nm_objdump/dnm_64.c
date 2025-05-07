@@ -221,6 +221,8 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 					c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
 			}
 		}
+		if (filename)
+			printf("c2 - %c\n", c);
 	} else if (ELF64_ST_TYPE(sym->st_info) == STT_COMMON) {
 		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
