@@ -235,7 +235,11 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 	else if (ELF64_ST_TYPE(sym->st_info) == STT_LOPROC || ELF64_ST_TYPE(sym->st_info) == STT_HIPROC)
 		c = 'p';
 	else
+	{
+		if (filename)
+			printf("this case\n");
 		return (1);
+	}
 	st_name = (d->endianness) ? bswap_32(sym->st_name) : sym->st_name;
 	sh_strtab_off = d->e_shoff + (d->sh_link * sizeof(Elf64_Shdr));
 	lseek(fd, sh_strtab_off, SEEK_SET);
