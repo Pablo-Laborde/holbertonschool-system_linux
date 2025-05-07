@@ -53,8 +53,6 @@ int manage_64(int fd)
 			lseek(fd, sh_offset, SEEK_SET);
 			if (manage_sym64_list(fd, &d, sh_size))
 				return (1);
-			if (filename)
-				printf("\n");
 		}
 	}
 	return (symflag);
@@ -82,10 +80,17 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 		if (read(fd, &sym, sizeof(Elf64_Sym)) != sizeof(Elf64_Sym))
 			return (1);
 		pos += sizeof(Elf64_Sym);
+		if (filename  && (j == 37))
+		{
+			uint64_t st_value = (d->endianness) ? bswap_64(sym.st_value) : sym.st_value;
+			printf("%016lx\n", st_value);
+		}
 		if (!sym.st_name)
 			continue;
 		m64(fd, d, &sym);
 	}
+	if (filename)
+		printf("\n");
 	return (0);
 }
 
