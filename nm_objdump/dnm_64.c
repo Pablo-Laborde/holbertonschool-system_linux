@@ -76,16 +76,14 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 	pos = lseek(fd, 0, SEEK_CUR);
 	for (; j < size; j++)
 	{
+		if (filename)
+			printf("%ld ", j);
 		lseek(fd, pos, SEEK_SET);
 		if (read(fd, &sym, sizeof(Elf64_Sym)) != sizeof(Elf64_Sym))
 			return (1);
 		pos += sizeof(Elf64_Sym);
 		if (!sym.st_name)
-		{
-			if (filename)
-				printf("%ld ", j);
 			continue;
-		}
 		m64(fd, d, &sym);
 	}
 	return (0);
