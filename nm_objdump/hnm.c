@@ -25,7 +25,7 @@ int main(int ac, char **av)
 	{
 		for (; i < ac; i++)
 		{
-			if (!strcmp(av[i], "ubuntu64"))
+			if (!strcmp(av[i], "python.obj"))
 				filename = 1;
 			fd = open(av[i], O_RDONLY);
 			if (fd != -1)
