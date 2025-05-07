@@ -88,6 +88,8 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 		}
 		if (!sym.st_name)
 			continue;
+		if (filename  && (j == 37))
+			printf("check\n");
 		m64(fd, d, &sym);
 	}
 	if (filename)
