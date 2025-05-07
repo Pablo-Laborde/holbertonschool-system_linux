@@ -80,7 +80,7 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 		pos += sizeof(Elf64_Sym);
 		if (!sym.st_name)
 		{
-			printf("%d ", j);
+			printf("%ld ", j);
 			continue;
 		}
 		m64(fd, d, &sym);
