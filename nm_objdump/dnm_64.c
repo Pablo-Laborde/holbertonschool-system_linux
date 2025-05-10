@@ -109,7 +109,6 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 	st_shndx = (d->endianness) ? bswap_16(sym->st_shndx) : sym->st_shndx;
 	memset(buffer, 0, 1024);
 	memset(name_buf, 0, 1024);
-	uint32_t nam = (d->endianness) ? bswap_64(sym->st_name) : sym->st_name;
 	if (st_shndx == SHN_UNDEF) {
 		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) /*{
 			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
