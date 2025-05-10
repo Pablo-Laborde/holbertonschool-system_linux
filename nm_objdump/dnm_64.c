@@ -155,7 +155,7 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 		offset = d->e_shoff + st_shndx * sizeof(Elf64_Shdr);
 		if (filename)
 		{
-			printf("eshoff: %d / stshndx: %d / offset: %ld\n", d->e_shoff, st_shndx, offset);
+			printf("eshoff: %ld / stshndx: %d / offset: %ld\n", d->e_shoff, st_shndx, offset);
 		}
 		lseek(fd, offset, SEEK_SET);
 		if (read(fd, &sobj, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
