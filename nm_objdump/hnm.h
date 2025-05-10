@@ -91,4 +91,11 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size);
 int m64(int fd, data64_t *d, Elf64_Sym *sym);
 
 
+/* a64_1.c */
+char abs_64(Elf64_Sym *sym);
+char func_64(Elf64_Sym *sym);
+char stt_common_64(Elf64_Sym *sym);
+int p_64(int fd, data64_t *d, Elf64_Sym *sym, char c, uint16_t st_shndx);
+
+
 #endif

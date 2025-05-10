@@ -62,7 +62,7 @@ char stt_common_32(Elf32_Sym *sym)
 * @d: data32_t
 * @sym: symbol
 * @c: char
-* @st_shndx: uint32_t
+* @st_shndx: uint16_t
 * Return: int
 */
 int p_32(int fd, data32_t *d, Elf32_Sym *sym, char c, uint16_t st_shndx)

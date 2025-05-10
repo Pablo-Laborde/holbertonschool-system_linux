@@ -106,27 +106,16 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 */
 int m64(int fd, data64_t *d, Elf64_Sym *sym)
 {
-	char		c = 0, buffer[1024], name_buf[1024];
+	char		c = 0, buffer[1024];
 	uint16_t	st_shndx = 0;
-	uint32_t	st_name = 0, sh_name = 0, sto = 0, pos = -1, n = -1;
-	uint64_t	offset = 0, sh_strtab_off = 0, strtab_off = 0, st_value = 0;
-	Elf64_Shdr sh_strtab, sobj, strtab;
+	uint32_t	sh_name = 0, sto = 0, pos = -1;
+	uint64_t	offset = 0;
+	Elf64_Shdr	sobj, strtab;
 
-	st_value = (d->ends) ? bswap_64(sym->st_value) : sym->st_value;
 	st_shndx = (d->ends) ? bswap_16(sym->st_shndx) : sym->st_shndx;
 	memset(buffer, 0, 1024);
-	memset(name_buf, 0, 1024);
 	if (st_shndx == SHN_UNDEF)
-	{
-		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) /*{
-			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-				c = 'W';
-			else if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL))
-			}*/
-				c = 'w';
-		else
-			c = 'U';
-	}
+		c = (ELF64_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
 	else if (ELF64_ST_TYPE(sym->st_info) == STT_FILE)
 	{
 		if (!sym->st_value)
@@ -134,32 +123,13 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym)
 		c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'F' : 'f';
 	}
 	else if (st_shndx == SHN_ABS)
-	{
-		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
-		{
-			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-				c = 'A';
-			else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-				c = 'a';
-		}
-		else
-			c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'A' : 'a';
-	}
+		c = abs_64(sym);
 	else if (ELF64_ST_TYPE(sym->st_info) == STT_FUNC)
-	{
-		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
-		{
-			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-				c = 'W';
-			else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-				c = 'w';
-		}
-		else
-			c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'T' : 't';
-	}
+		c = func_64(sym);
 	else if (st_shndx == SHN_COMMON)
 		c = (ELF64_ST_BIND(sym->st_info) == STB_WEAK) ? 'c' : 'C';
-	else if ((ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) || (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE))
+	else if ((ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) ||
+			(ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE))
 	{
 		offset = d->e_shoff + st_shndx * sizeof(Elf64_Shdr);
 		lseek(fd, offset, SEEK_SET);
@@ -251,38 +221,15 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym)
 		}
 	}
 	else if (ELF64_ST_TYPE(sym->st_info) == STT_COMMON)
-	{
-		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
-		{
-			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-				c = 'C';
-			else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-				c = 'c';
-		}
-		else
-			c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'C' : 'c';
-	}
+		c = stt_common_64(sym);
 	else if (ELF64_ST_TYPE(sym->st_info) == STT_SECTION)
 		c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'S' : 's';
-	else if (ELF64_ST_TYPE(sym->st_info) == STT_LOPROC || ELF64_ST_TYPE(sym->st_info) == STT_HIPROC)
+	else if (ELF64_ST_TYPE(sym->st_info) == STT_LOPROC ||
+			ELF64_ST_TYPE(sym->st_info) == STT_HIPROC)
 		c = 'p';
 	else
 		return (1);
-	st_name = (d->ends) ? bswap_32(sym->st_name) : sym->st_name;
-	sh_strtab_off = d->e_shoff + (d->sh_link * sizeof(Elf64_Shdr));
-	lseek(fd, sh_strtab_off, SEEK_SET);
-	if (read(fd, &sh_strtab, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
+	if (p_64(fd, d, sym, c, st_shndx))
 		return (1);
-	strtab_off = (d->ends) ? bswap_64(sh_strtab.sh_offset) : sh_strtab.sh_offset;
-	lseek(fd, (strtab_off + st_name), SEEK_SET);
-	do {
-		n++;
-		if (read(fd, name_buf + n, 1) != 1)
-			return (1);
-	} while (name_buf[n]);
-	if (st_shndx == SHN_UNDEF)
-		printf("                 %c %s\n", c, name_buf);
-	else
-		printf("%016lx %c %s\n", st_value, c, name_buf);
 	return (0);
 }
