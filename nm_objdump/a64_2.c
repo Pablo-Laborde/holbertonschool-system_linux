@@ -25,7 +25,7 @@ char mon_64(int fd, data64_t *d, Elf64_Sym *sym, uint32_t st_shndx)
 
 
 /**
-* bufer_read_64 - func
+* buffer_read_64 - func
 * @fd: int
 * @d: data64_t
 * @st_shndx: uint16_t
@@ -124,19 +124,15 @@ char notype_64(Elf64_Sym *sym, char *buffer)
 			!strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") ||
 			!strcmp(buffer, ".got"))
 	{
-		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
-			c = ((sym->st_other == STV_DEFAULT) ||
-				(sym->st_other == STV_PROTECTED)) ? 'W' : 'w';
-		else
-			c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
+		c = (ELF64_ST_BIND(sym->st_info) == STB_WEAK) ?
+		(((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED)) ?
+		'W' : 'w') : ((ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D');
 	}
 	else
 	{
-		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
-			c = ((sym->st_other == STV_DEFAULT) ||
-				(sym->st_other == STV_PROTECTED)) ? 'W' : 'w';
-		else
-			c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
+		c = (ELF64_ST_BIND(sym->st_info) == STB_WEAK) ?
+		(((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED)) ?
+		'W' : 'w') : ((ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N');
 	}
 	return (c);
 }

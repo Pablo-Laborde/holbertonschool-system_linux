@@ -25,7 +25,7 @@ char mon_32(int fd, data32_t *d, Elf32_Sym *sym, uint16_t st_shndx)
 
 
 /**
-* bufer_read_32 - func
+* buffer_read_32 - func
 * @fd: int
 * @d: data32_t
 * @st_shndx: uint16_t
