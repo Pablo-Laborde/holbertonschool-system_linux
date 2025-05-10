@@ -1,5 +1,6 @@
 #include "hnm.h"
 
+#define SS64 sizeof(Elf64_Sym)
 
 /**
 * manage_64 - func
@@ -9,19 +10,14 @@
 int manage_64(int fd)
 {
 	data64_t	d;
-	Elf64_Ehdr	h;
 	Elf64_Shdr	sh;
 	uint16_t	i = 0, symflag = 16;
 	uint32_t	sh_type = 0;
 	uint64_t	shdr_pos = 0, sh_size = 0, sh_offset = 0;
 
 	lseek(fd, 0, SEEK_SET);
-	if (read(fd, &h, sizeof(Elf64_Ehdr)) != sizeof(Elf64_Ehdr))
+	if (set_d64(fd, &d))
 		return (1);
-	d.ends = h.e_ident[EI_DATA] == ELFDATA2MSB;
-	d.e_shnum = (d.ends) ? bswap_16(h.e_shnum) : h.e_shnum;
-	d.e_shoff = (d.ends) ? bswap_64(h.e_shoff) : h.e_shoff;
-	d.e_shstrndx = (d.ends) ? bswap_16(h.e_shstrndx) : h.e_shstrndx;
 	if (d.e_shstrndx == SHN_XINDEX)
 	{
 		lseek(fd, d.e_shoff, SEEK_SET);
@@ -36,7 +32,7 @@ int manage_64(int fd)
 		if (read(fd, &sh, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
 			return (1);
 		shdr_pos += sizeof(Elf64_Shdr);
-		sh_size = ((d.ends) ? bswap_64(sh.sh_size) : sh.sh_size) / sizeof(Elf64_Sym);
+		sh_size = ((d.ends) ? bswap_64(sh.sh_size) : sh.sh_size) / SS64;
 		if (!sh_size)
 			continue;
 		sh_type = (d.ends) ? bswap_32(sh.sh_type) : sh.sh_type;
@@ -51,6 +47,26 @@ int manage_64(int fd)
 		}
 	}
 	return (symflag);
+}
+
+
+/**
+* set_d64 - func
+* @fd: int
+* @d: data64_t
+* Return: int
+*/
+int set_d64(int fd, data64_t *d)
+{
+	Elf64_Ehdr	h;
+
+	if (read(fd, &h, sizeof(Elf64_Ehdr)) != sizeof(Elf64_Ehdr))
+		return (1);
+	d->ends = h.e_ident[EI_DATA] == ELFDATA2MSB;
+	d->e_shnum = (d->ends) ? bswap_16(h.e_shnum) : h.e_shnum;
+	d->e_shoff = (d->ends) ? bswap_64(h.e_shoff) : h.e_shoff;
+	d->e_shstrndx = (d->ends) ? bswap_16(h.e_shstrndx) : h.e_shstrndx;
+	return (0);
 }
 
 
@@ -88,7 +104,8 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 * @sym: symbol
 * Return: int
 */
-int m64(int fd, data64_t *d, Elf64_Sym *sym) {
+int m64(int fd, data64_t *d, Elf64_Sym *sym)
+{
 	char		c = 0, buffer[1024], name_buf[1024];
 	uint16_t	st_shndx = 0;
 	uint32_t	st_name = 0, sh_name = 0, sto = 0, pos = -1, n = -1;
@@ -99,7 +116,8 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 	st_shndx = (d->ends) ? bswap_16(sym->st_shndx) : sym->st_shndx;
 	memset(buffer, 0, 1024);
 	memset(name_buf, 0, 1024);
-	if (st_shndx == SHN_UNDEF) {
+	if (st_shndx == SHN_UNDEF)
+	{
 		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) /*{
 			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 				c = 'W';
@@ -108,29 +126,41 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 				c = 'w';
 		else
 			c = 'U';
-	} else if (ELF64_ST_TYPE(sym->st_info) == STT_FILE) {
+	}
+	else if (ELF64_ST_TYPE(sym->st_info) == STT_FILE)
+	{
 		if (!sym->st_value)
 			return (1);
 		c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'F' : 'f';
-	} else if (st_shndx == SHN_ABS) {
-		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
+	}
+	else if (st_shndx == SHN_ABS)
+	{
+		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+		{
 			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 				c = 'A';
 			else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 				c = 'a';
-		} else
+		}
+		else
 			c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'A' : 'a';
-	} else if (ELF64_ST_TYPE(sym->st_info) == STT_FUNC) {
-		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
+	}
+	else if (ELF64_ST_TYPE(sym->st_info) == STT_FUNC)
+	{
+		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+		{
 			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 				c = 'W';
 			else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 				c = 'w';
-		} else
+		}
+		else
 			c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'T' : 't';
-	} else if (st_shndx == SHN_COMMON)
+	}
+	else if (st_shndx == SHN_COMMON)
 		c = (ELF64_ST_BIND(sym->st_info) == STB_WEAK) ? 'c' : 'C';
-	else if ((ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) || (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE)) {
+	else if ((ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) || (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE))
+	{
 		offset = d->e_shoff + st_shndx * sizeof(Elf64_Shdr);
 		lseek(fd, offset, SEEK_SET);
 		if (read(fd, &sobj, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
@@ -147,13 +177,16 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 			if (read(fd, buffer + pos, 1) != 1)
 				return (1);
 		} while (buffer[pos] && (pos < 1024));
-		if (ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) {
-			if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
+		if (ELF64_ST_TYPE(sym->st_info) == STT_OBJECT)
+		{
+			if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+			{
 				if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 					c = 'V';
 				else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 					c = 'v';
-			} else if (!strcmp(buffer, ".bss") || !strcmp(buffer, "completed.7585"))
+			}
+			else if (!strcmp(buffer, ".bss") || !strcmp(buffer, "completed.7585"))
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
 			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini") || !strcmp(buffer, ".eh_frame"))
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
@@ -161,54 +194,75 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
 			else /* (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got")) */
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
-		} else /* if (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE) */ {
+		}
+		else /* if (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE) */
+		{
 			if (!strcmp(buffer, ".fini_array") || !strcmp(buffer, ".init_array"))
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
 			else if (!strcmp(buffer, ".bss") || !strcmp(buffer, "completed.7585"))
 				c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
-			else if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt")) {
-				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
+			else if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt"))
+			{
+				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+				{
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 						c = 'W';
 					else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 						c = 'w';
 				} else
 					c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
-			} else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini") || !strcmp(buffer, ".eh_frame_hdr")) {
-				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
+			}
+			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini") || !strcmp(buffer, ".eh_frame_hdr"))
+			{
+				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+				{
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 						c = 'V';
 					else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 						c = 'v';
-				} else
+				}
+				else
 					c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-			} else if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got")) {
-				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
+			}
+			else if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got"))
+			{
+				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+				{
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 						c = 'W';
 					else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 						c = 'w';
-				} else
+				}
+				else
 					c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
-			} else {
-				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
+			}
+			else
+			{
+				if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+				{
 					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 						c = 'W';
 					else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 						c = 'w';
-				} else
+				}
+				else
 					c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
 			}
 		}
-	} else if (ELF64_ST_TYPE(sym->st_info) == STT_COMMON) {
-		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
+	}
+	else if (ELF64_ST_TYPE(sym->st_info) == STT_COMMON)
+	{
+		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+		{
 			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
 				c = 'C';
 			else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
 				c = 'c';
-		} else
+		}
+		else
 			c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'C' : 'c';
-	} else if (ELF64_ST_TYPE(sym->st_info) == STT_SECTION)
+	}
+	else if (ELF64_ST_TYPE(sym->st_info) == STT_SECTION)
 		c = (ELF64_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'S' : 's';
 	else if (ELF64_ST_TYPE(sym->st_info) == STT_LOPROC || ELF64_ST_TYPE(sym->st_info) == STT_HIPROC)
 		c = 'p';

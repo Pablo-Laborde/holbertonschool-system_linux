@@ -105,27 +105,17 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 */
 int m32(int fd, data32_t *d, Elf32_Sym *sym)
 {
-	char		c = 0, buffer[1024], name_buf[1024];
+	char		c = 0, name_buf[1024];
 	uint16_t	st_shndx = 0;
 	uint32_t	st_name = 0, sh_strtab_off = 0, strtab_off = 0, st_value = 0,
-				offset = 0, sh_name = 0, sto = 0, pos = -1, n = -1;
-	Elf32_Shdr sh_strtab, sobj, strtab;
+				n = -1;
+	Elf32_Shdr	sh_strtab;
 
 	st_value = (d->ends) ? bswap_32(sym->st_value) : sym->st_value;
 	st_shndx = (d->ends) ? bswap_16(sym->st_shndx) : sym->st_shndx;
-	memset(buffer, 0, 1024);
 	memset(name_buf, 0, 1024);
 	if (st_shndx == SHN_UNDEF)
-	{
-		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK) /*{
-			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-				c = 'W';
-			else if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL))
-			}*/
-				c = 'w';
-		else
-			c = 'U';
-	}
+		c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_FILE)
 	{
 		if (!sym->st_value)
@@ -133,132 +123,22 @@ int m32(int fd, data32_t *d, Elf32_Sym *sym)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'F' : 'f';
 	}
 	else if (st_shndx == SHN_ABS)
-	{
-		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-		{
-			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-				c = 'A';
-			else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-				c = 'a';
-		}
-		else
-			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'A' : 'a';
-	}
+		c = abs_32(sym);
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_FUNC)
+		c = func_32(sym);
+	else if ((ELF32_ST_TYPE(sym->st_info) == STT_OBJECT) ||
+		(ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE))
 	{
-		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-		{
-			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-				c = 'W';
-			else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-				c = 'w';
-		}
-		else
-			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'T' : 't';
-	}
-	else if ((ELF32_ST_TYPE(sym->st_info) == STT_OBJECT) || (ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE))
-	{
-		offset = d->e_shoff + st_shndx * sizeof(Elf32_Shdr);
-		lseek(fd, offset, SEEK_SET);
-		if (read(fd, &sobj, sizeof(Elf32_Shdr)) != sizeof(Elf32_Shdr))
+		c = mon_32(fd, d, sym, st_shndx);
+		if (c == -1)
 			return (1);
-		offset = d->e_shoff + d->e_shstrndx * sizeof(Elf32_Shdr);
-		lseek(fd, offset, SEEK_SET);
-		if (read(fd, &strtab, sizeof(Elf32_Shdr)) != sizeof(Elf32_Shdr))
-			return (1);
-		sto = (d->ends) ? bswap_32(strtab.sh_offset) : strtab.sh_offset;
-		sh_name = (d->ends) ? bswap_32(sobj.sh_name) : sobj.sh_name;
-		lseek(fd, sto + sh_name, SEEK_SET);
-		do {
-			pos++;
-			if (read(fd, buffer + pos, 1) != 1)
-				return (1);
-		} while (buffer[pos] && (pos < 1024));
-		if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
-		{
-			if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-			{
-				if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-					c = 'V';
-				else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-					c = 'v';
-			}
-			else if (!strcmp(buffer, ".bss"))
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'b' : 'B';
-			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini"))
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-			else if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt") || !strcmp(buffer, ".text.startup"))
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
-			else /* (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got")) */
-				c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
-		}
-		else /* if (ELF32_ST_TYPE(sym->st_info) == STT_NOTYPE) */
-		{
-			if (!strcmp(buffer, ".text") || !strcmp(buffer, ".plt"))
-			{
-				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-				{
-					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-						c = 'W';
-					else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-						c = 'w';
-				}
-				else
-					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 't' : 'T';
-			}
-			else if (!strcmp(buffer, ".rodata") || !strcmp(buffer, ".interp") || !strcmp(buffer, ".init") || !strcmp(buffer, ".fini"))
-			{
-				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-				{
-					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-						c = 'V';
-					else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-						c = 'v';
-				}
-				else
-					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'r' : 'R';
-			}
-			else if (!strcmp(buffer, ".data") || !strcmp(buffer, ".jcr") || !strcmp(buffer, ".ctors") || !strcmp(buffer, ".dtors") || !strcmp(buffer, ".got"))
-			{
-				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-				{
-					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-						c = 'V';
-					else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-						c = 'v';
-				}
-				else
-					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'd' : 'D';
-			}
-			else
-			{
-				if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-				{
-					if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-						c = 'W';
-					else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-						c = 'w';
-				}
-				else
-					c = (ELF32_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
-			}
-		}
 	}
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_COMMON)
-	{
-		if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
-		{
-			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
-				c = 'C';
-			else /* if ((sym->st_other == STV_HIDDEN) || (sym->st_other == STV_INTERNAL)) */
-				c = 'c';
-		}
-		else
-			c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'C' : 'c';
-	}
+		c = stt_common_32(sym);
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_SECTION)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_GLOBAL) ? 'S' : 's';
-	else if (ELF32_ST_TYPE(sym->st_info) == STT_LOPROC || ELF32_ST_TYPE(sym->st_info) == STT_HIPROC)
+	else if ((ELF32_ST_TYPE(sym->st_info) == STT_LOPROC) ||
+			(ELF32_ST_TYPE(sym->st_info) == STT_HIPROC))
 		c = 'p';
 	else
 		return (1);

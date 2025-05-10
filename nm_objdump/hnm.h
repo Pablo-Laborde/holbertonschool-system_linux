@@ -70,8 +70,22 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size);
 int m32(int fd, data32_t *d, Elf32_Sym *sym);
 
 
+/* a32_1.c */
+char abs_32(Elf32_Sym *sym);
+char func_32(Elf32_Sym *sym);
+char stt_common_32(Elf32_Sym *sym);
+
+
+/* a32_2.c */
+char mon_32(int fd, data32_t *d, Elf32_Sym *sym, uint32_t st_shndx);
+int buffer_read(int fd, data32_t *d, uint32_t st_shndx, char* buffer);
+char object_32(Elf32_Sym *sym, char *buffer);
+char notype_32(Elf32_Sym *sym, char *buffer);
+
+
 /* dnm_64.c */
 int manage_64(int fd);
+int set_d64(int fd, data64_t *d);
 int manage_sym64_list(int fd, data64_t *d, uint64_t size);
 int m64(int fd, data64_t *d, Elf64_Sym *sym);
 
