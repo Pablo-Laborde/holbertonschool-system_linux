@@ -152,36 +152,22 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 	} else if (st_shndx == SHN_COMMON)
 		c = (ELF64_ST_BIND(sym->st_info) == STB_WEAK) ? 'c' : 'C';
 	else if ((ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) || (ELF64_ST_TYPE(sym->st_info) == STT_NOTYPE)) {
-		if (filename)
-			printf("c1\n");
 		offset = d->e_shoff + st_shndx * sizeof(Elf64_Shdr);
-		if (filename)
-		{
-			printf("eshoff: %ld / stshndx: %d / offset: %ld\n", d->e_shoff, st_shndx, offset);
-		}
 		lseek(fd, offset, SEEK_SET);
 		if (read(fd, &sobj, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
 			return (1);
-		if (filename)
-			printf("c5\n");
 		offset = d->e_shoff + d->e_shstrndx * sizeof(Elf64_Shdr);
 		lseek(fd, offset, SEEK_SET);
 		if (read(fd, &strtab, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
 			return (1);
-		if (filename)
-			printf("c6\n");
 		sto = (d->endianness) ? bswap_64(strtab.sh_offset) : strtab.sh_offset;
 		sh_name = (d->endianness) ? bswap_32(sobj.sh_name) : sobj.sh_name;
 		lseek(fd, sto + sh_name, SEEK_SET);
-		if (filename)
-			printf("c3\n");
 		do {
 			pos++;
 			if (read(fd, buffer + pos, 1) != 1)
 				return (1);
 		} while (buffer[pos] && (pos < 1024));
-		if (filename)
-			printf("c4\n");
 		if (ELF64_ST_TYPE(sym->st_info) == STT_OBJECT) {
 			if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 				if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
@@ -235,8 +221,6 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 					c = (ELF64_ST_BIND(sym->st_info) == STB_LOCAL) ? 'n' : 'N';
 			}
 		}
-		if (filename)
-			printf("c2 - %c\n", c);
 	} else if (ELF64_ST_TYPE(sym->st_info) == STT_COMMON) {
 		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) {
 			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
@@ -251,8 +235,6 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 		c = 'p';
 	else
 		return (1);
-	if (filename)
-		printf("%c\n", c);
 	st_name = (d->endianness) ? bswap_32(sym->st_name) : sym->st_name;
 	sh_strtab_off = d->e_shoff + (d->sh_link * sizeof(Elf64_Shdr));
 	lseek(fd, sh_strtab_off, SEEK_SET);
