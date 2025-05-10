@@ -21,7 +21,7 @@
 
 /**
  * struct data32_s - structure
- * @endianness: uint8_t
+ * @ends: uint8_t
  * @e_shnum: uint16_t
  * @e_shstrndx: uint16_t
  * @e_shoff: uint32_t
@@ -29,7 +29,7 @@
  */
 typedef struct data32_s
 {
-	uint8_t		endianness;
+	uint8_t		ends;
 	uint16_t	e_shnum;
 	uint32_t	e_shoff,
 				e_shstrndx,
@@ -39,7 +39,7 @@ typedef struct data32_s
 
 /**
  * struct data64_s - structure
- * @endianness: uint8_t
+ * @ends: uint8_t
  * @e_shnum: uint16_t
  * @e_shstrndx: uint16_t
  * @e_shoff: uint32_t
@@ -47,7 +47,7 @@ typedef struct data32_s
  */
 typedef struct data64_s
 {
-	uint8_t		endianness;
+	uint8_t		ends;
 	uint16_t	e_shnum;
 	uint64_t	e_shoff,
 				e_shstrndx,
@@ -55,7 +55,6 @@ typedef struct data64_s
 } data64_t;
 
 
-extern int filename;
 
 /* Functions */
 
@@ -66,6 +65,7 @@ int elf_handler(int fd);
 
 /* dnm_32.c */
 int manage_32(int fd);
+int set_d32(int fd, data32_t *d);
 int manage_sym32_list(int fd, data32_t *d, uint32_t size);
 int m32(int fd, data32_t *d, Elf32_Sym *sym);
 

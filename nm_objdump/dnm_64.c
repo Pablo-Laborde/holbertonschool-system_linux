@@ -11,26 +11,23 @@ int manage_64(int fd)
 	data64_t	d;
 	Elf64_Ehdr	h;
 	Elf64_Shdr	sh;
-	uint16_t	i = 0,
-				symflag = 16;
+	uint16_t	i = 0, symflag = 16;
 	uint32_t	sh_type = 0;
-	uint64_t	shdr_pos = 0,
-				sh_size = 0,
-				sh_offset = 0;
+	uint64_t	shdr_pos = 0, sh_size = 0, sh_offset = 0;
 
 	lseek(fd, 0, SEEK_SET);
 	if (read(fd, &h, sizeof(Elf64_Ehdr)) != sizeof(Elf64_Ehdr))
 		return (1);
-	d.endianness = h.e_ident[EI_DATA] == ELFDATA2MSB;
-	d.e_shnum = (d.endianness) ? bswap_16(h.e_shnum) : h.e_shnum;
-	d.e_shoff = (d.endianness) ? bswap_64(h.e_shoff) : h.e_shoff;
-	d.e_shstrndx = (d.endianness) ? bswap_16(h.e_shstrndx) : h.e_shstrndx;
+	d.ends = h.e_ident[EI_DATA] == ELFDATA2MSB;
+	d.e_shnum = (d.ends) ? bswap_16(h.e_shnum) : h.e_shnum;
+	d.e_shoff = (d.ends) ? bswap_64(h.e_shoff) : h.e_shoff;
+	d.e_shstrndx = (d.ends) ? bswap_16(h.e_shstrndx) : h.e_shstrndx;
 	if (d.e_shstrndx == SHN_XINDEX)
 	{
 		lseek(fd, d.e_shoff, SEEK_SET);
 		if (read(fd, &sh, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
 			return (1);
-		d.e_shstrndx = (d.endianness) ? bswap_64(sh.sh_link) : sh.sh_link;
+		d.e_shstrndx = (d.ends) ? bswap_64(sh.sh_link) : sh.sh_link;
 	}
 	shdr_pos = lseek(fd, d.e_shoff, SEEK_SET);
 	for (; i < d.e_shnum; i++)
@@ -39,15 +36,15 @@ int manage_64(int fd)
 		if (read(fd, &sh, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
 			return (1);
 		shdr_pos += sizeof(Elf64_Shdr);
-		sh_size = ((d.endianness) ? bswap_64(sh.sh_size) : sh.sh_size) / sizeof(Elf64_Sym);
+		sh_size = ((d.ends) ? bswap_64(sh.sh_size) : sh.sh_size) / sizeof(Elf64_Sym);
 		if (!sh_size)
 			continue;
-		sh_type = (d.endianness) ? bswap_32(sh.sh_type) : sh.sh_type;
-		d.sh_link = (d.endianness) ? bswap_64(sh.sh_link) : sh.sh_link;
+		sh_type = (d.ends) ? bswap_32(sh.sh_type) : sh.sh_type;
+		d.sh_link = (d.ends) ? bswap_64(sh.sh_link) : sh.sh_link;
 		if (sh_type == SHT_SYMTAB)
 		{
 			symflag = 0;
-			sh_offset = (d.endianness) ? bswap_64(sh.sh_offset) : sh.sh_offset;
+			sh_offset = (d.ends) ? bswap_64(sh.sh_offset) : sh.sh_offset;
 			lseek(fd, sh_offset, SEEK_SET);
 			if (manage_sym64_list(fd, &d, sh_size))
 				return (1);
@@ -94,19 +91,12 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 	char		c = 0, buffer[1024], name_buf[1024];
 	uint16_t	st_shndx = 0;
-	uint32_t	st_name = 0,
-				sh_name = 0,
-				sto = 0,
-				pos = -1,
-				n = -1;
-	uint64_t	offset = 0,
-				sh_strtab_off = 0,
-				strtab_off = 0,
-				st_value = 0;
+	uint32_t	st_name = 0, sh_name = 0, sto = 0, pos = -1, n = -1;
+	uint64_t	offset = 0, sh_strtab_off = 0, strtab_off = 0, st_value = 0;
 	Elf64_Shdr sh_strtab, sobj, strtab;
 
-	st_value = (d->endianness) ? bswap_64(sym->st_value) : sym->st_value;
-	st_shndx = (d->endianness) ? bswap_16(sym->st_shndx) : sym->st_shndx;
+	st_value = (d->ends) ? bswap_64(sym->st_value) : sym->st_value;
+	st_shndx = (d->ends) ? bswap_16(sym->st_shndx) : sym->st_shndx;
 	memset(buffer, 0, 1024);
 	memset(name_buf, 0, 1024);
 	if (st_shndx == SHN_UNDEF) {
@@ -149,8 +139,8 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 		lseek(fd, offset, SEEK_SET);
 		if (read(fd, &strtab, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
 			return (1);
-		sto = (d->endianness) ? bswap_64(strtab.sh_offset) : strtab.sh_offset;
-		sh_name = (d->endianness) ? bswap_32(sobj.sh_name) : sobj.sh_name;
+		sto = (d->ends) ? bswap_64(strtab.sh_offset) : strtab.sh_offset;
+		sh_name = (d->ends) ? bswap_32(sobj.sh_name) : sobj.sh_name;
 		lseek(fd, sto + sh_name, SEEK_SET);
 		do {
 			pos++;
@@ -224,12 +214,12 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 		c = 'p';
 	else
 		return (1);
-	st_name = (d->endianness) ? bswap_32(sym->st_name) : sym->st_name;
+	st_name = (d->ends) ? bswap_32(sym->st_name) : sym->st_name;
 	sh_strtab_off = d->e_shoff + (d->sh_link * sizeof(Elf64_Shdr));
 	lseek(fd, sh_strtab_off, SEEK_SET);
 	if (read(fd, &sh_strtab, sizeof(Elf64_Shdr)) != sizeof(Elf64_Shdr))
 		return (1);
-	strtab_off = (d->endianness) ? bswap_64(sh_strtab.sh_offset) : sh_strtab.sh_offset;
+	strtab_off = (d->ends) ? bswap_64(sh_strtab.sh_offset) : sh_strtab.sh_offset;
 	lseek(fd, (strtab_off + st_name), SEEK_SET);
 	do {
 		n++;
