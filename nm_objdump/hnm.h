@@ -74,11 +74,12 @@ int m32(int fd, data32_t *d, Elf32_Sym *sym);
 char abs_32(Elf32_Sym *sym);
 char func_32(Elf32_Sym *sym);
 char stt_common_32(Elf32_Sym *sym);
+int p_32(int fd, data32_t *d, Elf32_Sym *sym, char c, uint16_t st_shndx);
 
 
 /* a32_2.c */
 char mon_32(int fd, data32_t *d, Elf32_Sym *sym, uint32_t st_shndx);
-int buffer_read(int fd, data32_t *d, uint32_t st_shndx, char* buffer);
+int buffer_read(int fd, data32_t *d, uint32_t st_shndx, char *buffer);
 char object_32(Elf32_Sym *sym, char *buffer);
 char notype_32(Elf32_Sym *sym, char *buffer);
 

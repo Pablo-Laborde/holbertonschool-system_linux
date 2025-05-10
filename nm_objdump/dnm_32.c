@@ -105,15 +105,10 @@ int manage_sym32_list(int fd, data32_t *d, uint32_t size)
 */
 int m32(int fd, data32_t *d, Elf32_Sym *sym)
 {
-	char		c = 0, name_buf[1024];
+	char		c = 0;
 	uint16_t	st_shndx = 0;
-	uint32_t	st_name = 0, sh_strtab_off = 0, strtab_off = 0, st_value = 0,
-				n = -1;
-	Elf32_Shdr	sh_strtab;
 
-	st_value = (d->ends) ? bswap_32(sym->st_value) : sym->st_value;
 	st_shndx = (d->ends) ? bswap_16(sym->st_shndx) : sym->st_shndx;
-	memset(name_buf, 0, 1024);
 	if (st_shndx == SHN_UNDEF)
 		c = (ELF32_ST_BIND(sym->st_info) == STB_WEAK) ? 'w' : 'U';
 	else if (ELF32_ST_TYPE(sym->st_info) == STT_FILE)
@@ -142,21 +137,7 @@ int m32(int fd, data32_t *d, Elf32_Sym *sym)
 		c = 'p';
 	else
 		return (1);
-	st_name = (d->ends) ? bswap_32(sym->st_name) : sym->st_name;
-	sh_strtab_off = d->e_shoff + (d->sh_link * sizeof(Elf32_Shdr));
-	lseek(fd, sh_strtab_off, SEEK_SET);
-	if (read(fd, &sh_strtab, sizeof(Elf32_Shdr)) != sizeof(Elf32_Shdr))
+	if (p_32(fd, d, sym, c, st_shndx))
 		return (1);
-	strtab_off = (d->ends) ? bswap_32(sh_strtab.sh_offset) : sh_strtab.sh_offset;
-	lseek(fd, (strtab_off + st_name), SEEK_SET);
-	do {
-		n++;
-		if (read(fd, name_buf + n, 1) != 1)
-			return (1);
-	} while (name_buf[n]);
-	if (st_shndx == SHN_UNDEF)
-		printf("         %c %s\n", c, name_buf);
-	else
-		printf("%08x %c %s\n", st_value, c, name_buf);
 	return (0);
 }
