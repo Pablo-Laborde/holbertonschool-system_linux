@@ -76,12 +76,6 @@ int manage_sym64_list(int fd, data64_t *d, uint64_t size)
 		if (read(fd, &sym, sizeof(Elf64_Sym)) != sizeof(Elf64_Sym))
 			return (1);
 		pos += sizeof(Elf64_Sym);
-		if (filename  && (j == 37))
-		{
-			uint64_t st_value = (d->endianness) ? bswap_64(sym.st_value) : sym.st_value;
-			uint32_t name = (d->endianness) ? bswap_64(sym.st_name) : sym.st_name;
-			printf("%016lx - %d\n", st_value, name);
-		}
 		if (!sym.st_name)
 			continue;
 		m64(fd, d, &sym);
@@ -116,10 +110,6 @@ int m64(int fd, data64_t *d, Elf64_Sym *sym) {
 	memset(buffer, 0, 1024);
 	memset(name_buf, 0, 1024);
 	uint32_t nam = (d->endianness) ? bswap_64(sym->st_name) : sym->st_name;
-	if (filename && (nam == 123))
-	{	
-		printf("%016lx - %d\n", st_value, nam);
-	}
 	if (st_shndx == SHN_UNDEF) {
 		if (ELF64_ST_BIND(sym->st_info) == STB_WEAK) /*{
 			if ((sym->st_other == STV_DEFAULT) || (sym->st_other == STV_PROTECTED))
