@@ -7,14 +7,14 @@
 * @fd: int
 * @d: data32_t
 * @sym: symbol
-* @st_shndx: uint32_t
+* @st_shndx: uint16_t
 * Return: char
 */
-char mon_32(int fd, data32_t *d, Elf32_Sym *sym, uint32_t st_shndx)
+char mon_32(int fd, data32_t *d, Elf32_Sym *sym, uint16_t st_shndx)
 {
 	char c = 0, buffer[1024];
 
-	if (buffer_read(fd, d, st_shndx, buffer))
+	if (buffer_read_32(fd, d, st_shndx, buffer))
 		return (-1);
 	if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
 		c = object_32(sym, buffer);
@@ -25,14 +25,14 @@ char mon_32(int fd, data32_t *d, Elf32_Sym *sym, uint32_t st_shndx)
 
 
 /**
-* bufer_read - func
+* bufer_read_32 - func
 * @fd: int
 * @d: data32_t
-* @st_shndx: uint32_t
+* @st_shndx: uint16_t
 * @buffer: char *
 * Return: int
 */
-int buffer_read(int fd, data32_t *d, uint32_t st_shndx, char *buffer)
+int buffer_read_32(int fd, data32_t *d, uint16_t st_shndx, char *buffer)
 {
 	uint32_t	offset = 0, sh_name = 0, sto = 0, pos = -1;
 	Elf32_Shdr	strtab, sobj;

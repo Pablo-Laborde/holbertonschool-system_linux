@@ -78,8 +78,8 @@ int p_32(int fd, data32_t *d, Elf32_Sym *sym, char c, uint16_t st_shndx);
 
 
 /* a32_2.c */
-char mon_32(int fd, data32_t *d, Elf32_Sym *sym, uint32_t st_shndx);
-int buffer_read(int fd, data32_t *d, uint32_t st_shndx, char *buffer);
+char mon_32(int fd, data32_t *d, Elf32_Sym *sym, uint16_t st_shndx);
+int buffer_read_32(int fd, data32_t *d, uint16_t st_shndx, char *buffer);
 char object_32(Elf32_Sym *sym, char *buffer);
 char notype_32(Elf32_Sym *sym, char *buffer);
 
@@ -96,6 +96,14 @@ char abs_64(Elf64_Sym *sym);
 char func_64(Elf64_Sym *sym);
 char stt_common_64(Elf64_Sym *sym);
 int p_64(int fd, data64_t *d, Elf64_Sym *sym, char c, uint16_t st_shndx);
+
+
+/* a64_2.c */
+char mon_64(int fd, data64_t *d, Elf64_Sym *sym, uint32_t st_shndx);
+int buffer_read_64(int fd, data64_t *d, uint16_t st_shndx, char *buffer);
+char object_64(Elf64_Sym *sym, char *buffer);
+char notype_64(Elf64_Sym *sym, char *buffer);
+
 
 
 #endif
