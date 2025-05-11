@@ -13,5 +13,5 @@ int tprintf(char const *format, ...)
 
 	tid = pthread_self();
 	printf("[%ld] %s", tid, format);
-	pthread_exit(NULL);
+	return (0);
 }
