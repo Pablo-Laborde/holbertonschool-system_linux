@@ -1,7 +1,7 @@
 #include "multithreading.h"
 
-PTHREAD_MUTEX_INITIALIZER
-PTHREAD_COND_INITIALIZER
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 /**
 * tprintf - func
@@ -10,8 +10,11 @@ PTHREAD_COND_INITIALIZER
 */
 int tprintf(char const *format, ...)
 {
+	pthread_t tid;
+
 	pthread_cond_wait(&cond, &mutex);
-	printf("%s", format);
+	tid = pthread_self();
+	printf("[%ld] %s", tid, format);
 	return (0);
 }
 
