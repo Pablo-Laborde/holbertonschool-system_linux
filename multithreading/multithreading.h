@@ -74,8 +74,14 @@ typedef struct blur_portion_s
 } blur_portion_t;
 
 
+extern pthread_mutex_t mutex;
+extern pthread_cond_t cond;
+
+void mutex_create(void) __attribute__((constructor));
+
 
 void *thread_entry(void *arg);
+int tprintf(char const *format, ...);
 int tprintf(char const *format, ...);
 
 
