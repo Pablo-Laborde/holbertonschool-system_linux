@@ -4,6 +4,7 @@
 
 #include <pthread.h>
 
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -77,7 +78,8 @@ typedef struct blur_portion_s
 extern pthread_mutex_t mutex;
 extern pthread_cond_t cond;
 
-void mutex_create(void) __attribute__((constructor));
+__attribute__((constructor)) void mutex_create(void);
+__attribute__((constructor)) void mutex_destroy(void);
 
 
 void *thread_entry(void *arg);
