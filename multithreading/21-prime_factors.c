@@ -2,31 +2,6 @@
 
 
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-
-
-/**
-* mutex_create - func
-*/
-__attribute__((constructor)) void mutex_create(void)
-{
-	pthread_mutex_init(&mutex, NULL);
-	pthread_cond_init(&cond, NULL);
-}
-
-
-/**
-* mutex_destroy - func
-*/
-__attribute__((destructor)) void mutex_destroy(void)
-{
-	pthread_mutex_destroy(&mutex);
-	pthread_cond_destroy(&cond);
-}
-
-
-
 /**
 * prime_factors - func
 * @s: char const *
@@ -34,37 +9,28 @@ __attribute__((destructor)) void mutex_destroy(void)
 */
 list_t *prime_factors(char const *s)
 {
-	pthread_t tid;
+	unsigned long int n = 0, lim = 0, i = 2, *p = NULL;
+	list_t *list = NULL;
 
-	pthread_cond_wait(&cond, &mutex);
-	pthread_mutex_lock(&mutex);
-	tid = pthread_self();
-	printf("[%ld] = ", tid);
-	prime(strtoul(s, NULL, 10));
-	pthread_mutex_unlock(&mutex);
-	return (0);
-}
-
-
-/**
-* prime - func
-* @n: unsigned long
-*/
-void prime(unsigned long int n)
-{
-	unsigned long int aux = n, lim = n / 2, i = 2;
-	int flag = 0;
-
-	while (i <= lim)
+	list = malloc(sizeof(list_t));
+	if (!list)
+		exit(1);
+	list_init(list);
+	n = strtol(s, NULL, 10);
+	lim = n / 2;
+	while ((i <= lim) && (i <= n))
 	{
-		if (!(aux % i))
+		if (!(n % i))
 		{
-			(flag) ? (printf(" * ")) : (flag = 1);
-			printf("%lu", i);
-			aux /= i;
+			p = malloc(sizeof(unsigned long int));
+			if (!p)
+				exit(1);
+			*p = i;
+			list_add(list, (void *)p);
+			n /= i;
 		}
 		else
 			i++;
 	}
-	printf("\n");
+	return (list);
 }

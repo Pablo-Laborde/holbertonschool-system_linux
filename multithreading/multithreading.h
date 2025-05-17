@@ -90,7 +90,6 @@ void *thread_entry(void *arg);
 int tprintf(char const *format, ...);
 int tprintf(char const *format, ...);
 list_t *prime_factors(char const *s);
-void prime(unsigned long int n);
 
 
 #endif
