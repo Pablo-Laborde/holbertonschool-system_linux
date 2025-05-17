@@ -45,5 +45,5 @@ int tprintf(char const *format, ...)
 	vprintf(format, args);
 	va_end(args);
 	pthread_mutex_unlock(&mutex);
-	pthread_exit(NULL);
+	return (0);
 }
