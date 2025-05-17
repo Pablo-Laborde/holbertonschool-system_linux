@@ -24,7 +24,7 @@ list_t *prime_factors(char const *s)
 	else
 	{
 		do {
-			lim = n / 2;
+			lim = lim_binary(n);
 			if (!(n % i))
 			{
 				p = malloc(sizeof(unsigned long int));
@@ -43,4 +43,27 @@ list_t *prime_factors(char const *s)
 		}
 	}
 	return (list);
+}
+
+
+/**
+* lim_binary - func
+* @n: unsigned long int
+* Return: unsigned long int
+*/
+unsigned long int lim_binary(unsigned long int n)
+{
+	unsigned long int r = 0, end = n / 2, begin = 2, mid = (end + begin) / 2;
+
+	do {
+		r = mid * mid;
+		if (r < n)
+			begin = mid;
+		else if (r > n)
+			end = mid - 1;
+		else
+			break;
+		mid = (end + begin) / 2 + 1;
+	} while (begin < end);
+	return (mid);
 }

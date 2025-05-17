@@ -90,6 +90,7 @@ void *thread_entry(void *arg);
 int tprintf(char const *format, ...);
 int tprintf(char const *format, ...);
 list_t *prime_factors(char const *s);
+unsigned long int lim_binary(unsigned long int n);
 
 
 #endif
