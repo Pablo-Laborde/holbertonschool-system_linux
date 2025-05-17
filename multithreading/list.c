@@ -15,7 +15,7 @@ node_t *node_create(void *content)
 
 	node->content = content;
 	node->prev = NULL;
-	node-> next = NULL;
+	node->next = NULL;
 	return (node);
 }
 
