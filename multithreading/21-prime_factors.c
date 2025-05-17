@@ -33,7 +33,7 @@ list_t *prime_factors(char const *s)
 				n /= i;
 			}
 			else
-				i++;
+				i += (i == 2) ? 1 : 2;
 		} while (i <= lim);
 		if (n > 1)
 		{
