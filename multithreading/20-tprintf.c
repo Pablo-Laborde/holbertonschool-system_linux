@@ -13,8 +13,10 @@ int tprintf(char const *format, ...)
 	pthread_t tid;
 
 	pthread_cond_wait(&cond, &mutex);
+	pthread_mutex_lock(&mutex);
 	tid = pthread_self();
 	printf("[%ld] %s", tid, format);
+	pthread_mutex_unlock(&mutex);
 	return (0);
 }
 
