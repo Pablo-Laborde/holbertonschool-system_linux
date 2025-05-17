@@ -2,6 +2,10 @@
 #define MULTITHREADING_H
 
 
+
+#include "list.h"
+
+
 #include <pthread.h>
 
 #include <stdarg.h>
@@ -78,13 +82,15 @@ typedef struct blur_portion_s
 extern pthread_mutex_t mutex;
 extern pthread_cond_t cond;
 
-void mutex_create(void) __attribute__((constructor));
-void mutex_destroy(void) __attribute__((destructor));
+__attribute__((constructor)) void mutex_create(void);
+__attribute__((destructor)) void mutex_destroy(void);
 
 
 void *thread_entry(void *arg);
 int tprintf(char const *format, ...);
 int tprintf(char const *format, ...);
+list_t *prime_factors(char const *s);
+void prime(unsigned long int n);
 
 
 #endif

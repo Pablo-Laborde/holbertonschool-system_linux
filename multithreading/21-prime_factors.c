@@ -28,22 +28,43 @@ __attribute__((destructor)) void mutex_destroy(void)
 
 
 /**
-* tprintf - func
-* @format: char const *
-* Return: int
+* prime_factors - func
+* @s: char const *
+* Return: lsit_t *
 */
-int tprintf(char const *format, ...)
+list_t *prime_factors(char const *s)
 {
 	pthread_t tid;
-	va_list args;
 
 	pthread_cond_wait(&cond, &mutex);
 	pthread_mutex_lock(&mutex);
 	tid = pthread_self();
-	printf("[%ld] ", tid);
-	va_start(args, format);
-	vprintf(format, args);
-	va_end(args);
+	printf("[%ld] = ", tid);
+	prime(strtoul(s, NULL, 10));
 	pthread_mutex_unlock(&mutex);
 	return (0);
+}
+
+
+/**
+* prime - func
+* @n: unsigned long
+*/
+void prime(unsigned long int n)
+{
+	unsigned long int aux = n, lim = n / 2, i = 2;
+	int flag = 0;
+
+	while (i <= lim)
+	{
+		if (!(aux % i))
+		{
+			(flag) ? (printf(" * ")) : (flag = 1);
+			printf("%lu", i);
+			aux /= i;
+		}
+		else
+			i++;
+	}
+	printf("\n");
 }
