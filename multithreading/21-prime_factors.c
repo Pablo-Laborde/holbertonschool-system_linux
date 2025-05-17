@@ -9,7 +9,7 @@
 */
 list_t *prime_factors(char const *s)
 {
-	unsigned long int n = 0, lim = 0, i = 2, *p = NULL;
+	unsigned long int n = 0, lim = 0, i = 0, *p = NULL;
 	list_t *list = NULL;
 
 	list = malloc(sizeof(list_t));
@@ -20,6 +20,8 @@ list_t *prime_factors(char const *s)
 	lim = n / 2;
 	while ((i <= lim) && (i <= n))
 	{
+		if (i < 2)
+			i = 2;
 		if (!(n % i))
 		{
 			p = malloc(sizeof(unsigned long int));
