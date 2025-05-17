@@ -2,27 +2,29 @@
 
 
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t mutex;
+
+/*
+* An other way of initilizing mutex without function declaration.
+* pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+*/
 
 
 /**
 * mutex_create - func
 */
-__attribute__((constructor)) void mutex_create(void)
+void mutex_create(void)
 {
 	pthread_mutex_init(&mutex, NULL);
-	pthread_cond_init(&cond, NULL);
 }
 
 
 /**
 * mutex_destroy - func
 */
-__attribute__((destructor)) void mutex_destroy(void)
+void mutex_destroy(void)
 {
 	pthread_mutex_destroy(&mutex);
-	pthread_cond_destroy(&cond);
 }
 
 
@@ -37,7 +39,6 @@ int tprintf(char const *format, ...)
 	pthread_t tid;
 	va_list args;
 
-	pthread_cond_wait(&cond, &mutex);
 	pthread_mutex_lock(&mutex);
 	tid = pthread_self();
 	printf("[%ld] ", tid);
