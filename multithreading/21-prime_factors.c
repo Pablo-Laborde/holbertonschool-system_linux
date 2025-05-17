@@ -13,40 +13,31 @@ list_t *prime_factors(char const *s)
 	list_t *list = NULL;
 
 	list = malloc(sizeof(list_t));
-	if (!list)
-		exit(1);
 	list_init(list);
 	n = strtol(s, NULL, 10);
-	lim = n / 2;
 	if (n < 2)
 	{
 		p = malloc(sizeof(unsigned long int));
-		if (!p)
-			exit(1);
 		*p = n;
 		list_add(list, (void *)p);
 	}
 	else
 	{
-		while (i <= lim)
-		{
+		do {
+			lim = n / 2;
 			if (!(n % i))
 			{
 				p = malloc(sizeof(unsigned long int));
-				if (!p)
-					exit(1);
 				*p = i;
 				list_add(list, (void *)p);
 				n /= i;
 			}
 			else
 				i++;
-		}
+		} while (i <= lim);
 		if (n > 1)
 		{
 			p = malloc(sizeof(unsigned long int));
-			if (!p)
-				exit(1);
 			*p = n;
 			list_add(list, (void *)p);
 		}
