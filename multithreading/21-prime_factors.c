@@ -14,7 +14,7 @@ list_t *prime_factors(char const *s)
 
 	list = malloc(sizeof(list_t));
 	list_init(list);
-	n = strtol(s, NULL, 10);
+	n = strtoul(s, NULL, 10);
 	if (n < 2)
 	{
 		p = malloc(sizeof(unsigned long int));
@@ -23,18 +23,20 @@ list_t *prime_factors(char const *s)
 	}
 	else
 	{
-		do {
-			lim = lim_binary(n);
+		lim = lim_binary(n);
+		while (i <= lim)
+		{
 			if (!(n % i))
 			{
 				p = malloc(sizeof(unsigned long int));
 				*p = i;
 				list_add(list, (void *)p);
 				n /= i;
+				lim = lim_binary(n);
 			}
 			else
 				i += (i == 2) ? 1 : 2;
-		} while (i <= lim);
+		}
 		if (n > 1)
 		{
 			p = malloc(sizeof(unsigned long int));
@@ -55,7 +57,8 @@ unsigned long int lim_binary(unsigned long int n)
 {
 	unsigned long int r = 0, end = n / 2, begin = 2, mid = (end + begin) / 2;
 
-	do {
+	while (begin < end)
+	{
 		r = mid * mid;
 		if (r < n)
 			begin = mid;
@@ -64,6 +67,6 @@ unsigned long int lim_binary(unsigned long int n)
 		else
 			break;
 		mid = (end + begin) / 2 + 1;
-	} while (begin < end);
+	}
 	return (mid);
 }
