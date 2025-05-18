@@ -28,9 +28,9 @@ task_t *create_task(task_entry_t entry, void *param)
 */
 void destroy_task(task_t *task)
 {
-	pthread_mutex_destroy(&task->lock);
+	//pthread_mutex_destroy(&task->lock);
+	list_destroy(task->result, free);
 	free(task->result);
-	free(task->param);
 	free(task);
 }
 
