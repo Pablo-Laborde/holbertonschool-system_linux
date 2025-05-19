@@ -54,11 +54,13 @@ void *exec_tasks(list_t const *tasks)
 		task = node->content;
 		if (task->status == PENDING)
 		{
+			pthread_mutex_lock(&task->lock);
 			task->status = STARTED;
 			tprintf("[%02d] Started\n", i);
 			task->result = task->entry(task->param);
 			tprintf("[%02d] Success\n", i);
 			task->status = SUCCESS;
+			pthread_mutex_unlock(&task->lock);
 		}
 		i++;
 		node = node->next;
