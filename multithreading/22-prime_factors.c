@@ -28,7 +28,6 @@ task_t *create_task(task_entry_t entry, void *param)
 */
 void destroy_task(task_t *task)
 {
-	//pthread_mutex_destroy(&task->lock);
 	list_destroy(task->result, free);
 	free(task->result);
 	free(task);
@@ -56,9 +55,9 @@ void *exec_tasks(list_t const *tasks)
 		if (task->status == PENDING)
 		{
 			task->status = STARTED;
-			tprintf("[%d] Started\n", i);
+			tprintf("[%02d] Started\n", i);
 			task->result = task->entry(task->param);
-			tprintf("[%d] Success\n", i);
+			tprintf("[%02d] Success\n", i);
 			task->status = SUCCESS;
 		}
 		i++;
