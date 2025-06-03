@@ -117,9 +117,6 @@ typedef struct task_s
 } task_t;
 
 
-extern pthread_mutex_t mutex;
-extern pthread_cond_t cond;
-
 __attribute__((constructor)) void mutex_create(void);
 __attribute__((destructor)) void mutex_destroy(void);
 
