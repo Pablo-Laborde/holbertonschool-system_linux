@@ -32,9 +32,9 @@ int main(int ac, char **av, char **env)
 	{
 		while (waitpid(pid, &status, 0) && !WIFEXITED(status))
 		{
-			ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 			ptrace(PTRACE_GETREGS, pid, NULL, &data);
-			printf("%llu\n", data.rax);
+			if (data.orig_rax != -1)
+				printf("%llu\n", data.orig_rax);
 			ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 		}
 		printf("Exit status: %d\n", WEXITSTATUS(status));
