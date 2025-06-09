@@ -42,7 +42,7 @@ int main(int ac, char **av, char **env)
 		while (waitpid(pid, &status, 0) && !WIFEXITED(status))
 		{
 			ptrace(PTRACE_GETREGS, pid, NULL, &data);
-			if ((data.orig_rax != -1) && !in_sys)
+			if (data.orig_rax != -1)
 				printf("%llu\n", data.orig_rax);
 			ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 			ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
