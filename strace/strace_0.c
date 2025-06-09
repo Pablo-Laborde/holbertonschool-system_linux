@@ -21,7 +21,7 @@
 int main(int ac, char **av, char **env)
 {
 	pid_t pid = 0;
-	int status = 0, i = 0, in_sys = 0;
+	int status = 0, i = 0;
 	char **cav = NULL;
 	struct user_regs_struct data;
 
@@ -43,12 +43,8 @@ int main(int ac, char **av, char **env)
 		{
 			ptrace(PTRACE_GETREGS, pid, NULL, &data);
 			if ((data.orig_rax != -1) && !in_sys)
-			{
 				printf("%llu\n", data.orig_rax);
-				in_sys = 1;
-			}
-			else
-				in_sys = 0;
+			ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 			ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 		}
 	}
