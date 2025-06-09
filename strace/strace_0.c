@@ -54,18 +54,22 @@ int main(int ac, char **av, char **env)
 		execve(cav[0], cav, env);
 	}
 	waitpid(pid, &status, 0);
+	ptrace(PTRACE_GETREGS, pid, NULL, &data);
+	if (data.orig_rax != -1)
+		printf("%llu\n", data.orig_rax);
 	while (!WIFEXITED(status))
 	{
-		ptrace(PTRACE_GETREGS, pid, NULL, &data);
-		if (data.orig_rax != -1)
-			printf("%llu\n", data.orig_rax);
 		/* Step to syscall exit */
 		ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 		waitpid(pid, &status, 0);
+		ptrace(PTRACE_GETREGS, pid, NULL, &data);
+		if (data.orig_rax != -1)
+			printf("%llu\n", data.orig_rax);
 		/* Step to next syscall entry */
 		ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 		waitpid(pid, &status, 0);
 	}
+	printf("Exit status: %d\n", WEXITSTATUS(status));
 	free(cav);
 	return (0);
 }
