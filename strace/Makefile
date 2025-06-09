@@ -10,4 +10,4 @@ $(NAME): $(OBJ)
 
 #clean
 clean:
-	rm -f $(OBJ) $(NAME)
+	rm -f strace_0
