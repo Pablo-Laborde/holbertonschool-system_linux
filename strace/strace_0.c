@@ -69,7 +69,6 @@ int main(int ac, char **av, char **env)
 		ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 		waitpid(pid, &status, 0);
 	}
-	printf("Exit status: %d\n", WEXITSTATUS(status));
 	free(cav);
 	return (0);
 }
