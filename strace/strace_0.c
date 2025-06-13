@@ -78,3 +78,9 @@ int main(int ac, char **av, char **env)
 	free(cav);
 	return (0);
 }
+
+/*
+* There was a problem in which the execve output was printed before the syscall
+* number in some cases. That wassolved forcing output with the fflush(NULL),
+* it could have been solved with setbuf(stdout, _IONBF) too.
+*/
