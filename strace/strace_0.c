@@ -26,7 +26,7 @@ int main(int ac, char **av, char **env)
 
 	if (ac < 2)
 	{
-		printf("usage: ./strace_1 command_path args\n");
+		printf("usage: ./strace_0 command_path args\n");
 		return (1);
 	}
 	pid = fork();
