@@ -24,7 +24,6 @@ int main(int ac, char **av, char **env)
 	int status = 0;
 	struct user_regs_struct data;
 
-	cav = cp_av(ac, av);
 	pid = fork();
 	if (!pid)
 	{
@@ -53,7 +52,6 @@ int main(int ac, char **av, char **env)
 		ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 		waitpid(pid, &status, 0);
 	}
-	free(cav);
 	return (0);
 }
 
