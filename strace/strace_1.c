@@ -37,10 +37,7 @@ int main(int ac, char **av, char **env)
 	struct user_regs_struct data;
 
 	if (ac < 2)
-	{
-		printf("usage: ./strace_1 command_path args\n");
-		return (1);
-	}
+		printf("usage: ./strace_1 command_path args\n"), return (1);
 	setbuf(stdout, NULL);
 	pid = fork();
 	if (!pid)

@@ -24,6 +24,8 @@ int main(int ac, char **av, char **env)
 	int status = 0;
 	struct user_regs_struct data;
 
+	if (ac < 2)
+		printf("usage: ./strace_1 command_path args\n"), return (1);
 	pid = fork();
 	if (!pid)
 	{
