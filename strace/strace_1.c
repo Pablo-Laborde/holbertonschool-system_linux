@@ -12,27 +12,6 @@
 
 
 /**
-* cp_av - func
-* @ac: int
-* @av: char **
-* Return: char **
-*/
-char **cp_av(int ac, char **av)
-{
-	char **cav = NULL;
-	int i = 0;
-
-	cav = malloc(sizeof(char *) * ac);
-	if (!cav)
-		exit(1);
-	for (; i < (ac - 1); i++)
-		cav[i] = av[i + 1];
-	cav[i] = NULL;
-	return (cav);
-}
-
-
-/**
 * syscall_name - func
 * @no: unsigned long
 * Return: char *
@@ -55,15 +34,19 @@ int main(int ac, char **av, char **env)
 {
 	pid_t pid = 0;
 	int status = 0;
-	char **cav = NULL;
 	struct user_regs_struct data;
 
-	cav = cp_av(ac, av);
+	if (ac < 2)
+	{
+		printf("usage: ./strace_1 command_path args\n");
+		return (1);
+	}
+	setbuf(stdout, NULL);
 	pid = fork();
 	if (!pid)
 	{
 		ptrace(PTRACE_TRACEME, pid, NULL, NULL);
-		execve(cav[0], cav, env);
+		execve(av[1], av + 1, env);
 	}
 	waitpid(pid, &status, 0);
 	ptrace(PTRACE_GETREGS, pid, NULL, &data);
@@ -81,6 +64,5 @@ int main(int ac, char **av, char **env)
 		ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 		waitpid(pid, &status, 0);
 	}
-	free(cav);
 	return (0);
 }
