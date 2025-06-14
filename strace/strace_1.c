@@ -59,10 +59,11 @@ int main(int ac, char **av, char **env)
 		waitpid(pid, &status, 0);
 		ptrace(PTRACE_GETREGS, pid, NULL, &data);
 		if ((long)data.orig_rax != -1)
-			printf("%s\n", syscall_name(data.orig_rax));
+			printf("%s", syscall_name(data.orig_rax));
 		/* Step to next syscall entry */
 		ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 		waitpid(pid, &status, 0);
+		printf("\n");
 	}
 	return (0);
 }
