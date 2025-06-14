@@ -55,7 +55,7 @@ int main(int ac, char **av, char **env)
 	}
 	waitpid(pid, &status, 0);
 	ptrace(PTRACE_GETREGS, pid, NULL, &data);
-	if (data.orig_rax != -1)
+	if ((long)data.orig_rax != -1)
 	{
 		printf("%llu\n", data.orig_rax);
 		fflush(NULL);
@@ -66,7 +66,7 @@ int main(int ac, char **av, char **env)
 		ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
 		waitpid(pid, &status, 0);
 		ptrace(PTRACE_GETREGS, pid, NULL, &data);
-		if (data.orig_rax != -1)
+		if ((long)data.orig_rax != -1)
 		{
 			printf("%llu\n", data.orig_rax);
 			fflush(NULL);

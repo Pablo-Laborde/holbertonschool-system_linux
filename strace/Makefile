@@ -4,8 +4,11 @@ CCFLAGS = -g -Wall -Werror -Wextra -pedantic
 
 
 #strace_0
-$(NAME): $(OBJ)
+strace_0:
 	$(CC) $(CCFLAGS) strace_0.c -o strace_0
+
+strace_1:
+	$(CC) $(CCFLAGS) strace_0.c -o strace_1
 
 
 #clean
