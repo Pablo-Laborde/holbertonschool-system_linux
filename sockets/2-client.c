@@ -14,7 +14,7 @@ int main(int ac, char **av)
 
 	if (ac != 3)
 	{
-		printf("Usage: %s <host> <port>]n", av[0]);
+		printf("Usage: %s <host> <port>\n", av[0]);
 		exit(EXIT_FAILURE);
 	}
 	s_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
