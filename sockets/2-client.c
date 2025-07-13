@@ -31,6 +31,6 @@ int main(int ac, char **av)
 	c_fd = connect(s_fd, res->ai_addr, res->ai_addrlen);
 	if (c_fd == -1)
 		exit(EXIT_FAILURE);
-	printf("Conected to %s:%s\n", av[1], av[2]);
+	printf("Connected to %s:%s\n", av[1], av[2]);
 	return (EXIT_SUCCESS);
 }
