@@ -11,7 +11,9 @@ int main(void)
 	char buffer[256];
 	socklen_t len = 0;
 	struct sockaddr_in sa, ca;
+	ssize_t b_len = 0;
 
+	setbuf(stdout, NULL);
 	s_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (s_fd == -1)
 		exit(errno);
@@ -29,11 +31,11 @@ int main(void)
 		exit(errno);
 	printf("Client connected: %s\n", inet_ntoa(ca.sin_addr));
 	printf("Message received: \"");
-	memset(buffer, 0, 256);
-	while (recv(c_fd, buffer, 256, 0))
+	b_len = recv(c_fd, buffer, 256, 0);
+	while (b_len)
 	{
-		printf("%s", buffer);
-		memset(buffer, 0, 256);
+		write(1, buffer, b_len);
+		b_len = recv(c_fd, buffer, 256, 0);
 	}
 	printf("\"\n");
 	close(c_fd);
