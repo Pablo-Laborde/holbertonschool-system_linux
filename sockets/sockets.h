@@ -18,5 +18,15 @@
 
 /* Functions */
 
+/* side_f40.c */
+int create_socket(void);
+void bind_socket(int socket_fd, int port);
+void listen_socket(int socket_fd, int port);
+int accept_client(int socket_fd);
+char *get_input(int client_fd);
+
+/* side_f41.c */
+void break_input(char *msg);
+
 
 #endif
