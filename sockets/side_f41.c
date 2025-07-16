@@ -13,11 +13,11 @@ void break_input(char *msg)
 	if (!a)
 		exit(errno);
 	b = a;
-	b = strtok(b, " \n");
+	b = strtok(b, " \r\n");
 	printf("Method: %s\n", b);
-	b = strtok(NULL, " \n");
+	b = strtok(NULL, " \r\n");
 	printf("Path: %s\n", b);
-	b = strtok(NULL, " \n");
+	b = strtok(NULL, " \r\n");
 	printf("Version: %s\n", b);
 	free(a);
 }
