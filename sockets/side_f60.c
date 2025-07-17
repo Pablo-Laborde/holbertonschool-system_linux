@@ -48,6 +48,5 @@ char **ha(char *msg)
 		hi++;
 		a = spliter(msg, "\r\n", hi);
 	}
-	free(a);
 	return (arr);
 }
