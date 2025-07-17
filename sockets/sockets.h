@@ -28,5 +28,12 @@ char *get_input(int client_fd);
 /* side_f41.c */
 void break_input(char *msg);
 
+/* size_f50.c */
+void print_ppq(char **arr);
+char *spliter(char *str, char *delim, int n);
+char **add_to_arr(char **arr, char *str, int size);
+char **ppq(char *msg);
+void free_arr(char **arr);
+
 
 #endif
