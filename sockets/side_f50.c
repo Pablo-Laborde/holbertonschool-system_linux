@@ -78,6 +78,7 @@ char **ppq(char *msg)
 {
 	int i = 0;
 	char *a = NULL, *s = NULL, **arr = NULL;
+
 	a = spliter(msg, " \r\n", 1);
 	s = spliter(a, "?&=", i);
 	while (s)

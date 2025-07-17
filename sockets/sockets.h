@@ -35,5 +35,9 @@ char **add_to_arr(char **arr, char *str, int size);
 char **ppq(char *msg);
 void free_arr(char **arr);
 
+/* side_f60.c */
+void print_ha(char **arr);
+char **ha(char *msg);
+
 
 #endif
