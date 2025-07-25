@@ -91,11 +91,12 @@ char *get_input(int client_fd)
 	{
 		aux = fmsg;
 		alen = msglen;
-		blen = recv(client_fd, buffer, 256, 0);
+		blen = recv(client_fd, buffer, 255, 0);
 		msglen += blen;
-		fmsg = malloc(msglen);
+		fmsg = malloc(msglen + 1);
 		if (!fmsg)
 			exit(errno);
+		fmsg[msglen] = 0;
 		if (aux)
 		{
 			memcpy(fmsg, aux, alen);
