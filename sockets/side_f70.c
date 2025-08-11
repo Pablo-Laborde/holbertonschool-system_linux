@@ -85,7 +85,7 @@ char *retrieve_path(char *rr)
 	b = strtok(NULL, " \r\n");
 	c = strdup(b);
 	free(a);
-	return(c);
+	return (c);
 }
 
 
