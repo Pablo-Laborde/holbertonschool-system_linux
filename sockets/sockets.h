@@ -28,7 +28,7 @@ char *get_input(int client_fd);
 /* side_f41.c */
 void break_input(char *msg);
 
-/* size_f50.c */
+/* side_f50.c */
 void print_ppq(char **arr);
 char *spliter(char *str, char *delim, int n);
 char **add_to_arr(char **arr, char *str, int size);
@@ -38,6 +38,12 @@ void free_arr(char **arr);
 /* side_f60.c */
 void print_ha(char **arr);
 char **ha(char *msg);
+
+/* side_f70 */
+char *get_input_2(int client_fd);
+char **split_body(char *rr);
+char *retrieve_path(char *rr);
+void print_bp(char *path, char **arr);
 
 
 #endif
